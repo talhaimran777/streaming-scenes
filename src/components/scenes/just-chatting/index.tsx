@@ -60,7 +60,7 @@ export function JustChattingHorizontal({
           }}
         >
           <CornerFrame
-            label="CAMERA"
+            label={settings.cameraLabel}
             showLabel={settings.showCameraLabel}
             size={56}
             thick={6}
@@ -139,7 +139,7 @@ export function JustChattingHorizontal({
                 color: "#8A8A93",
               }}
             >
-              CHAT
+              {settings.chatPanelLabel}
             </div>
             {settings.showViewerCount && (
               <div
@@ -149,7 +149,7 @@ export function JustChattingHorizontal({
                   color: "#FF3B3B",
                 }}
               >
-                {viewers} WATCHING
+                {viewers} {settings.watchingSuffix}
               </div>
             )}
           </div>
@@ -172,10 +172,12 @@ export function JustChattingHorizontal({
                   color: "#8A8A93",
                 }}
               >
-                LATEST FOLLOWER
+                {settings.latestFollowerLabel}
               </div>
               <div style={{ fontSize: 30, fontWeight: 600 }}>
-                {latestSubscriber ?? "nadeking"}
+                {latestSubscriber ||
+                  settings.latestSubscriberFallback ||
+                  "—"}
               </div>
             </div>
           )}
@@ -205,7 +207,7 @@ export function JustChattingHorizontal({
               color: "#E8192C",
             }}
           >
-            TODAY
+            {settings.agendaKicker}
           </div>
           <div
             style={{
@@ -282,7 +284,7 @@ export function JustChattingVertical({
           }}
         >
           <CornerFrame
-            label="CAMERA"
+            label={settings.cameraLabel}
             showLabel={settings.showCameraLabel}
             size={48}
             thick={6}
@@ -326,7 +328,7 @@ export function JustChattingVertical({
                 color: "#8A8A93",
               }}
             >
-              CHAT
+              {settings.chatPanelLabel}
             </div>
             {settings.showViewerCount && (
               <div
@@ -336,22 +338,13 @@ export function JustChattingVertical({
                   color: "#FF3B3B",
                 }}
               >
-                {viewers || 248} WATCHING
+                {viewers} {settings.watchingSuffix}
               </div>
             )}
           </div>
-          <ChatFeed
-            messages={messages}
-            fallback={[
-              { author: "smokecriminal", message: "that clutch was insane" },
-              { author: "nadeking", message: "rank up when" },
-              {
-                author: "mirage_enjoyer",
-                message: "drop the crosshair code",
-              },
-            ]}
-          />
-          {settings.showLatestSubscriber && latestSubscriber && (
+          <ChatFeed messages={messages} />
+          {settings.showLatestSubscriber &&
+            (latestSubscriber || settings.latestSubscriberFallback) && (
             <div
               style={{
                 padding: "18px 28px",
@@ -361,9 +354,9 @@ export function JustChattingVertical({
                 color: "#8A8A93",
               }}
             >
-              LATEST ·{" "}
+              {settings.latestFollowerLabelShort} ·{" "}
               <span style={{ color: "#fff", fontWeight: 600 }}>
-                {latestSubscriber}
+                {latestSubscriber || settings.latestSubscriberFallback}
               </span>
             </div>
           )}

@@ -17,6 +17,7 @@ export type LiveEnvelope = {
     redirectUri: string;
   };
   clients: number;
+  storage: "redis" | "filesystem";
 };
 
 const defaultEnvelope = (): LiveEnvelope => ({
@@ -30,6 +31,7 @@ const defaultEnvelope = (): LiveEnvelope => ({
     redirectUri: "http://localhost:3000/api/youtube/oauth/callback",
   },
   clients: 0,
+  storage: "filesystem",
 });
 
 export function useLiveFeed() {

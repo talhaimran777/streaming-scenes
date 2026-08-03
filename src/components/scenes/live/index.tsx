@@ -102,7 +102,9 @@ export function LiveHorizontal({
             alignItems: "stretch",
           }}
         >
-          {settings.showLiveBadge && <LiveBadge clip />}
+          {settings.showLiveBadge && (
+            <LiveBadge clip text={settings.liveBadgeText} />
+          )}
           <div
             style={{
               flex: 1,
@@ -141,7 +143,7 @@ export function LiveHorizontal({
                   color: "#8A8A93",
                 }}
               >
-                UPTIME {uptime}
+                {settings.uptimePrefix} {uptime}
               </div>
             )}
           </div>
@@ -196,7 +198,7 @@ export function LiveHorizontal({
         >
           {settings.showRating && (
             <StatCard
-              label="PREMIER RATING"
+              label={settings.ratingLabel}
               value={settings.rating}
               delta={settings.ratingDelta}
               accentBar
@@ -211,10 +213,10 @@ export function LiveHorizontal({
               }}
             >
               {settings.showKd && (
-                <StatCard label="K / D" value={settings.kd} compact />
+                <StatCard label={settings.kdLabel} value={settings.kd} compact />
               )}
               {settings.showHs && (
-                <StatCard label="HS %" value={settings.hs} compact />
+                <StatCard label={settings.hsLabel} value={settings.hs} compact />
               )}
             </div>
           )}
@@ -237,12 +239,12 @@ export function LiveHorizontal({
                   color: "#8A8A93",
                 }}
               >
-                SESSION
+                {settings.sessionHeading}
               </div>
               {[
-                ["KILLS", settings.kills, false],
-                ["DEATHS", settings.deaths, false],
-                ["W / L", settings.wl, true],
+                [settings.killsLabel, settings.kills, false],
+                [settings.deathsLabel, settings.deaths, false],
+                [settings.wlLabel, settings.wl, true],
               ].map(([label, value, accent]) => (
                 <div
                   key={String(label)}
@@ -275,7 +277,7 @@ export function LiveHorizontal({
           }}
         >
           <CornerFrame
-            label="FACECAM"
+            label={settings.facecamLabel}
             showLabel={settings.showFacecamLabel}
             size={44}
             thick={5}
@@ -392,7 +394,9 @@ export function LiveVertical({
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-            {settings.showLiveBadge && <LiveBadge size="sm" />}
+            {settings.showLiveBadge && (
+              <LiveBadge size="sm" text={settings.liveBadgeText} />
+            )}
             {settings.showBrand && (
               <>
                 <div
@@ -428,7 +432,9 @@ export function LiveVertical({
             >
               {settings.showTitle ? title : ""}
               {settings.showTitle && settings.showUptime ? " · " : ""}
-              {settings.showUptime ? `UPTIME ${uptime}` : ""}
+              {settings.showUptime
+                ? `${settings.uptimePrefix} ${uptime}`
+                : ""}
             </div>
           )}
         </div>
@@ -488,17 +494,17 @@ export function LiveVertical({
         >
           {settings.showRating && (
             <StatCard
-              label="RATING"
+              label={settings.ratingLabelVertical}
               value={settings.rating}
               accentBar
               compact
             />
           )}
           {settings.showKd && (
-            <StatCard label="K / D" value={settings.kd} compact />
+            <StatCard label={settings.kdLabel} value={settings.kd} compact />
           )}
           {settings.showHs && (
-            <StatCard label="HS %" value={settings.hs} compact />
+            <StatCard label={settings.hsLabel} value={settings.hs} compact />
           )}
         </div>
       )}
@@ -514,7 +520,7 @@ export function LiveVertical({
           }}
         >
           <CornerFrame
-            label="FACECAM"
+            label={settings.facecamLabel}
             showLabel={settings.showFacecamLabel}
             size={40}
             thick={5}

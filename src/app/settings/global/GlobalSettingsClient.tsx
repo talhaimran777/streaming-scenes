@@ -224,6 +224,7 @@ export default function GlobalSettingsPage() {
               ? ` · ~${data.quota.hoursRemaining}h remaining at current burn`
               : ""}
             {` · chat every ${Math.round(data.quota.chatIntervalMs / 1000)}s`}
+            {` · storage ${data.storage}`}
           </div>
         </Section>
 

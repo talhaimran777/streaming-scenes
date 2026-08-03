@@ -110,6 +110,7 @@ export function StartingSoonHorizontal({ global, settings }: Props) {
             value={countdown}
             infoRows={settings.infoRows}
             showInfoRows={settings.showInfoRows}
+            countdownLabel={settings.countdownLabel}
           />
         </div>
       )}
@@ -206,40 +207,73 @@ export function StartingSoonVertical({ global, settings }: Props) {
               background: "rgba(14,14,18,0.85)",
               padding: "36px 40px",
               display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "space-between",
+              flexDirection: "column",
+              gap: 20,
             }}
           >
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <div
-                style={{
-                  fontFamily: "var(--font-jetbrains), monospace",
-                  fontSize: 20,
-                  letterSpacing: "0.28em",
-                  color: "#8A8A93",
-                }}
-              >
-                STARTING IN
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-jetbrains), monospace",
-                  fontSize: 112,
-                  fontWeight: 700,
-                  lineHeight: 1,
-                  letterSpacing: "-0.04em",
-                }}
-              >
-                {countdown}
-              </div>
-            </div>
             <div
               style={{
-                width: 6,
-                height: 120,
-                background: "linear-gradient(180deg,#E8192C,#8B5CF6)",
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "space-between",
               }}
-            />
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <div
+                  style={{
+                    fontFamily: "var(--font-jetbrains), monospace",
+                    fontSize: 20,
+                    letterSpacing: "0.28em",
+                    color: "#8A8A93",
+                  }}
+                >
+                  {settings.countdownLabel}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-jetbrains), monospace",
+                    fontSize: 112,
+                    fontWeight: 700,
+                    lineHeight: 1,
+                    letterSpacing: "-0.04em",
+                  }}
+                >
+                  {countdown}
+                </div>
+              </div>
+              <div
+                style={{
+                  width: 6,
+                  height: 120,
+                  background: "linear-gradient(180deg,#E8192C,#8B5CF6)",
+                }}
+              />
+            </div>
+            {settings.showInfoRows && settings.infoRows.length > 0 && (
+              <div
+                style={{
+                  borderTop: "1px solid rgba(255,255,255,0.12)",
+                  paddingTop: 16,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 14,
+                  fontFamily: "var(--font-jetbrains), monospace",
+                  fontSize: 22,
+                }}
+              >
+                {settings.infoRows.map((row) => (
+                  <div
+                    key={`${row.label}-${row.value}`}
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <span style={{ color: "#8A8A93" }}>{row.label}</span>
+                    <span style={{ color: row.accent ? "#FF3B3B" : undefined }}>
+                      {row.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

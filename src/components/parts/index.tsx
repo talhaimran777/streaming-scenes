@@ -555,10 +555,12 @@ export function CountdownCard({
   value,
   infoRows,
   showInfoRows,
+  countdownLabel = "STARTING IN",
 }: {
   value: string;
   infoRows: Array<{ label: string; value: string; accent?: boolean }>;
   showInfoRows: boolean;
+  countdownLabel?: string;
 }) {
   return (
     <div
@@ -591,7 +593,7 @@ export function CountdownCard({
             color: "#8A8A93",
           }}
         >
-          STARTING IN
+          {countdownLabel}
         </div>
         <div
           style={{
@@ -625,7 +627,7 @@ export function CountdownCard({
             >
               {infoRows.map((row) => (
                 <div
-                  key={row.label}
+                  key={`${row.label}-${row.value}`}
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
                   <span style={{ color: "#8A8A93" }}>{row.label}</span>

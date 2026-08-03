@@ -19,7 +19,14 @@ const DATA_DIR = path.join(process.cwd(), "data");
 const SETTINGS_PATH = path.join(DATA_DIR, "settings.json");
 
 let writeChain: Promise<void> = Promise.resolve();
-let cache: AppSettings | null = null;
+/** Filesystem-only cache. Redis mode always re-reads remote storage. */
+let fsCache: AppSettings | null = null;
+
+export type SettingsStorageBackend = "redis" | "filesystem";
+
+export function getSettingsStorageBackend(): SettingsStorageBackend {
+  return isRemoteStorageConfigured() ? "redis" : "filesystem";
+}
 
 async function ensureDataDir() {
   await fs.mkdir(DATA_DIR, { recursive: true });
@@ -51,27 +58,23 @@ async function writeSettingsToFs(validated: AppSettings) {
 }
 
 export async function readSettings(): Promise<AppSettings> {
-  if (cache) return cache;
-
   if (isRemoteStorageConfigured()) {
     const remote = await storageGetJson<unknown>(STORAGE_KEYS.settings);
     if (remote != null) {
-      const parsed = appSettingsSchema.parse(remote);
-      cache = parsed;
-      return parsed;
+      return appSettingsSchema.parse(remote);
     }
-    const defaults = defaultSettings();
-    cache = defaults;
-    return defaults;
+    return defaultSettings();
   }
+
+  if (fsCache) return fsCache;
 
   const fromFs = await readSettingsFromFs();
   if (fromFs) {
-    cache = fromFs;
+    fsCache = fromFs;
     return fromFs;
   }
   const defaults = defaultSettings();
-  cache = defaults;
+  fsCache = defaults;
   return defaults;
 }
 
@@ -80,7 +83,7 @@ export async function writeSettings(
   emit = true,
 ): Promise<AppSettings> {
   const validated = appSettingsSchema.parse(next);
-  cache = validated;
+  fsCache = validated;
 
   writeChain = writeChain.then(async () => {
     if (isRemoteStorageConfigured()) {
@@ -127,5 +130,5 @@ export async function patchScene<K extends SceneId>(
 }
 
 export function invalidateSettingsCache() {
-  cache = null;
+  fsCache = null;
 }

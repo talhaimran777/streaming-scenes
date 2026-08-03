@@ -195,6 +195,11 @@ function renderFields(
   const d = draft as Record<string, unknown>;
 
   if (scene === "starting-soon") {
+    const infoRows = (d.infoRows as Array<{
+      label: string;
+      value: string;
+      accent?: boolean;
+    }>) ?? [];
     return (
       <>
         <Section title="Visibility">
@@ -217,6 +222,9 @@ function renderFields(
           </Field>
           <Field label="Tagline (vertical)">
             <TextArea value={String(d.taglineVertical)} onChange={(v) => u("taglineVertical", v)} />
+          </Field>
+          <Field label="Countdown label">
+            <TextInput value={String(d.countdownLabel)} onChange={(v) => u("countdownLabel", v)} />
           </Field>
           <Field label="Standby badge">
             <TextInput value={String(d.standbyText)} onChange={(v) => u("standbyText", v)} />
@@ -250,6 +258,76 @@ function renderFields(
             />
           </Field>
         </Section>
+        <Section title="Info rows">
+          <p style={{ color: "#8A8A93", fontSize: 13, margin: 0 }}>
+            e.g. TONIGHT / PREMIER GRIND, GOAL / 20K RATING. Shown on horizontal and vertical.
+          </p>
+          {infoRows.map((row, index) => (
+            <div
+              key={index}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr auto auto",
+                gap: 8,
+                alignItems: "end",
+              }}
+            >
+              <Field label={index === 0 ? "Label" : " "}>
+                <TextInput
+                  value={row.label}
+                  onChange={(v) => {
+                    const next = [...infoRows];
+                    next[index] = { ...next[index], label: v };
+                    u("infoRows", next);
+                  }}
+                />
+              </Field>
+              <Field label={index === 0 ? "Value" : " "}>
+                <TextInput
+                  value={row.value}
+                  onChange={(v) => {
+                    const next = [...infoRows];
+                    next[index] = { ...next[index], value: v };
+                    u("infoRows", next);
+                  }}
+                />
+              </Field>
+              <Toggle
+                label="Accent"
+                checked={!!row.accent}
+                onChange={(v) => {
+                  const next = [...infoRows];
+                  next[index] = { ...next[index], accent: v };
+                  u("infoRows", next);
+                }}
+              />
+              <button
+                type="button"
+                className="admin-btn secondary"
+                onClick={() => {
+                  u(
+                    "infoRows",
+                    infoRows.filter((_, i) => i !== index),
+                  );
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            className="admin-btn secondary"
+            onClick={() =>
+              u("infoRows", [
+                ...infoRows,
+                { label: "LABEL", value: "VALUE", accent: false },
+              ])
+            }
+          >
+            Add row
+          </button>
+        </Section>
       </>
     );
   }
@@ -265,6 +343,7 @@ function renderFields(
           <Toggle label="Uptime" checked={!!d.showUptime} onChange={(v) => u("showUptime", v)} />
           <Toggle label="Brand" checked={!!d.showBrand} onChange={(v) => u("showBrand", v)} />
           <Toggle label="Facecam frame" checked={!!d.showFacecam} onChange={(v) => u("showFacecam", v)} />
+          <Toggle label="Facecam label" checked={!!d.showFacecamLabel} onChange={(v) => u("showFacecamLabel", v)} />
           <Toggle label="Audio bars" checked={!!d.showAudioBars} onChange={(v) => u("showAudioBars", v)} />
           <Toggle label="Bottom bar" checked={!!d.showBottomBar} onChange={(v) => u("showBottomBar", v)} />
           <Toggle label="Socials" checked={!!d.showSocials} onChange={(v) => u("showSocials", v)} />
@@ -283,6 +362,33 @@ function renderFields(
           <Field label="Kills"><TextInput value={String(d.kills)} onChange={(v) => u("kills", v)} /></Field>
           <Field label="Deaths"><TextInput value={String(d.deaths)} onChange={(v) => u("deaths", v)} /></Field>
           <Field label="W/L"><TextInput value={String(d.wl)} onChange={(v) => u("wl", v)} /></Field>
+        </Section>
+        <Section title="Labels">
+          <Field label="Live badge text"><TextInput value={String(d.liveBadgeText)} onChange={(v) => u("liveBadgeText", v)} /></Field>
+          <Field label="Uptime prefix"><TextInput value={String(d.uptimePrefix)} onChange={(v) => u("uptimePrefix", v)} /></Field>
+          <Field label="Rating label"><TextInput value={String(d.ratingLabel)} onChange={(v) => u("ratingLabel", v)} /></Field>
+          <Field label="Rating label (vertical)"><TextInput value={String(d.ratingLabelVertical)} onChange={(v) => u("ratingLabelVertical", v)} /></Field>
+          <Field label="K/D label"><TextInput value={String(d.kdLabel)} onChange={(v) => u("kdLabel", v)} /></Field>
+          <Field label="HS label"><TextInput value={String(d.hsLabel)} onChange={(v) => u("hsLabel", v)} /></Field>
+          <Field label="Session heading"><TextInput value={String(d.sessionHeading)} onChange={(v) => u("sessionHeading", v)} /></Field>
+          <Field label="Kills label"><TextInput value={String(d.killsLabel)} onChange={(v) => u("killsLabel", v)} /></Field>
+          <Field label="Deaths label"><TextInput value={String(d.deathsLabel)} onChange={(v) => u("deathsLabel", v)} /></Field>
+          <Field label="W/L label"><TextInput value={String(d.wlLabel)} onChange={(v) => u("wlLabel", v)} /></Field>
+          <Field label="Facecam label"><TextInput value={String(d.facecamLabel)} onChange={(v) => u("facecamLabel", v)} /></Field>
+        </Section>
+        <Section title="Facecam size">
+          <Field label="Width (px)">
+            <TextInput
+              value={String(d.facecamWidth)}
+              onChange={(v) => u("facecamWidth", Number(v) || 520)}
+            />
+          </Field>
+          <Field label="Height (px)">
+            <TextInput
+              value={String(d.facecamHeight)}
+              onChange={(v) => u("facecamHeight", Number(v) || 293)}
+            />
+          </Field>
         </Section>
         <Section title="Copy">
           <Field label="Override title (optional)">
@@ -317,6 +423,18 @@ function renderFields(
           <Field label="Kicker"><TextInput value={String(d.kicker)} onChange={(v) => u("kicker", v)} /></Field>
           <Field label="Headline line 1"><TextInput value={String(d.headlineLine1)} onChange={(v) => u("headlineLine1", v)} /></Field>
           <Field label="Headline line 2"><TextInput value={String(d.headlineLine2)} onChange={(v) => u("headlineLine2", v)} /></Field>
+          <Field label="Headline lines (vertical, one per line)">
+            <TextArea
+              value={(d.headlineVerticalLines as string[]).join("\n")}
+              onChange={(v) =>
+                u(
+                  "headlineVerticalLines",
+                  v.split("\n").map((s) => s.trim()).filter(Boolean),
+                )
+              }
+              rows={4}
+            />
+          </Field>
           <Field label="Subtext"><TextArea value={String(d.subtext)} onChange={(v) => u("subtext", v)} /></Field>
           <Field label="Subtext (vertical)"><TextArea value={String(d.subtextVertical)} onChange={(v) => u("subtextVertical", v)} /></Field>
           <Field label="Corner note"><TextInput value={String(d.cornerNote)} onChange={(v) => u("cornerNote", v)} /></Field>
@@ -330,6 +448,7 @@ function renderFields(
       <>
         <Section title="Visibility">
           <Toggle label="Camera frame" checked={!!d.showCameraFrame} onChange={(v) => u("showCameraFrame", v)} />
+          <Toggle label="Camera label" checked={!!d.showCameraLabel} onChange={(v) => u("showCameraLabel", v)} />
           <Toggle label="Chat panel" checked={!!d.showChatPanel} onChange={(v) => u("showChatPanel", v)} />
           <Toggle label="Viewer count" checked={!!d.showViewerCount} onChange={(v) => u("showViewerCount", v)} />
           <Toggle label="Latest subscriber" checked={!!d.showLatestSubscriber} onChange={(v) => u("showLatestSubscriber", v)} />
@@ -340,6 +459,15 @@ function renderFields(
         </Section>
         <Section title="Copy">
           <Field label="Badge text"><TextInput value={String(d.badgeText)} onChange={(v) => u("badgeText", v)} /></Field>
+          <Field label="Camera label"><TextInput value={String(d.cameraLabel)} onChange={(v) => u("cameraLabel", v)} /></Field>
+          <Field label="Chat panel label"><TextInput value={String(d.chatPanelLabel)} onChange={(v) => u("chatPanelLabel", v)} /></Field>
+          <Field label="Watching suffix"><TextInput value={String(d.watchingSuffix)} onChange={(v) => u("watchingSuffix", v)} /></Field>
+          <Field label="Latest follower label"><TextInput value={String(d.latestFollowerLabel)} onChange={(v) => u("latestFollowerLabel", v)} /></Field>
+          <Field label="Latest follower label (short)"><TextInput value={String(d.latestFollowerLabelShort)} onChange={(v) => u("latestFollowerLabelShort", v)} /></Field>
+          <Field label="Latest subscriber fallback" hint="Shown when YouTube has no name yet. Leave empty for —">
+            <TextInput value={String(d.latestSubscriberFallback ?? "")} onChange={(v) => u("latestSubscriberFallback", v)} />
+          </Field>
+          <Field label="Agenda kicker"><TextInput value={String(d.agendaKicker)} onChange={(v) => u("agendaKicker", v)} /></Field>
           <Field label="Agenda"><TextArea value={String(d.agendaText)} onChange={(v) => u("agendaText", v)} /></Field>
           <Field label="Max messages">
             <TextInput
@@ -365,8 +493,23 @@ function renderFields(
         <Field label="Kicker"><TextInput value={String(d.kicker)} onChange={(v) => u("kicker", v)} /></Field>
         <Field label="Headline line 1"><TextInput value={String(d.headlineLine1)} onChange={(v) => u("headlineLine1", v)} /></Field>
         <Field label="Headline line 2"><TextInput value={String(d.headlineLine2)} onChange={(v) => u("headlineLine2", v)} /></Field>
+        <Field label="Headline lines (vertical, one per line)">
+          <TextArea
+            value={(d.headlineVerticalLines as string[]).join("\n")}
+            onChange={(v) =>
+              u(
+                "headlineVerticalLines",
+                v.split("\n").map((s) => s.trim()).filter(Boolean),
+              )
+            }
+            rows={4}
+          />
+        </Field>
         <Field label="Subtext"><TextArea value={String(d.subtext)} onChange={(v) => u("subtext", v)} /></Field>
+        <Field label="Subtext (vertical)"><TextArea value={String(d.subtextVertical)} onChange={(v) => u("subtextVertical", v)} /></Field>
+        <Field label="Next stream label"><TextInput value={String(d.nextStreamLabel)} onChange={(v) => u("nextStreamLabel", v)} /></Field>
         <Field label="Next stream value"><TextInput value={String(d.nextStreamValue)} onChange={(v) => u("nextStreamValue", v)} /></Field>
+        <Field label="Session label"><TextInput value={String(d.sessionLabel)} onChange={(v) => u("sessionLabel", v)} /></Field>
         <Field label="Session value"><TextInput value={String(d.sessionValue)} onChange={(v) => u("sessionValue", v)} /></Field>
         <Field label="Socials heading"><TextInput value={String(d.socialsHeading)} onChange={(v) => u("socialsHeading", v)} /></Field>
       </Section>

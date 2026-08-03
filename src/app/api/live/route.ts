@@ -1,12 +1,14 @@
 import { NextRequest } from "next/server";
 import { bus, type BusEvent } from "@/lib/sse/bus";
-import { readSettings } from "@/lib/settings/store";
+import {
+  getSettingsStorageBackend,
+  readSettings,
+} from "@/lib/settings/store";
 import { getQuota } from "@/lib/youtube/quota";
 import { getYouTubeStatus } from "@/lib/youtube/oauth";
 import {
   addLiveClient,
   getClientCount,
-  getLiveSnapshot,
   removeLiveClient,
 } from "@/lib/youtube/poller";
 
@@ -47,6 +49,7 @@ export async function GET(_req: NextRequest) {
         quota,
         youtube,
         clients: getClientCount(),
+        storage: getSettingsStorageBackend(),
       });
 
       const onAny = (msg: unknown) => {
