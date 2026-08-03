@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TEYE Stream Overlays
 
-## Getting Started
+Next.js OBS browser sources for TEYE — five scenes in both **1920×1080** and **1080×1920**, each with its own settings page, live SSE updates, and optional YouTube Data API integration (viewers, chat, latest subscriber, real uptime).
 
-First, run the development server:
+## Quick start
 
 ```bash
+npm install
+cp .env.example .env.local   # optional, for YouTube
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). The dev server binds to `0.0.0.0` so you can also open it from your phone at `http://<your-pc-lan-ip>:3000/control`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## OBS setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Add a **Browser** source.
+2. Set Width / Height to `1920` × `1080` (desktop) or `1080` × `1920` (mobile/vertical).
+3. Copy a scene URL from the dashboard, e.g.:
+   - `http://localhost:3000/scene/starting-soon?o=h`
+   - `http://localhost:3000/scene/live?o=v`
+4. For **Live / Gaming**, keep transparency enabled (default) and place the browser source above your game capture.
+5. Leave the app running while you stream. Settings changes push to OBS instantly over SSE — no refresh needed.
 
-## Learn More
+`?o=h` / `?o=v` force orientation. Without the query param, orientation follows the browser source aspect ratio.
 
-To learn more about Next.js, take a look at the following resources:
+## Scenes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Scene | Path | Notes |
+| --- | --- | --- |
+| Starting Soon | `/scene/starting-soon` | Countdown + ticker |
+| Live / Gaming | `/scene/live` | Transparent overlay |
+| Be Right Back | `/scene/brb` | Pause interstitial |
+| Just Chatting | `/scene/just-chatting` | Camera + chat |
+| Stream Ending | `/scene/ending` | Thanks + socials |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Per-scene settings: `/settings/[scene]`  
+Global brand / YouTube: `/settings/global`  
+Phone control panel: `/control`
 
-## Deploy on Vercel
+## YouTube live data
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Create a Google Cloud project and enable **YouTube Data API v3**.
+2. Create an OAuth 2.0 **Web** client.
+3. Add authorized redirect URI: `http://localhost:3000/api/youtube/oauth/callback`
+4. Put `YOUTUBE_CLIENT_ID` and `YOUTUBE_CLIENT_SECRET` in `.env.local`.
+5. Open `/settings/global` → **Connect YouTube**.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The server runs a **single poller** shared by all open scenes (so quota is not multiplied by horizontal + vertical sources). Chat defaults to ~15s polling to stay within the 10,000 unit/day quota for a multi-hour stream. The dashboard and control panel show a live quota meter.
+
+## Stack
+
+- Next.js App Router + TypeScript + Tailwind v4
+- Zod-validated settings in `data/settings.json`
+- SSE at `/api/live`
+- Fonts: Chakra Petch + JetBrains Mono (self-hosted via `next/font`)
