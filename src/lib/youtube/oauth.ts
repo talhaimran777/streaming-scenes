@@ -17,13 +17,22 @@ const SCOPES = [
   "https://www.googleapis.com/auth/youtube.force-ssl",
 ].join(" ");
 
+const globalForToken = globalThis as unknown as {
+  __teyeYouTubeToken?: YouTubeToken | null;
+};
+
 export function getOAuthConfig() {
   const clientId = process.env.YOUTUBE_CLIENT_ID ?? "";
   const clientSecret = process.env.YOUTUBE_CLIENT_SECRET ?? "";
   const redirectUri =
     process.env.YOUTUBE_REDIRECT_URI ??
     "http://localhost:3000/api/youtube/oauth/callback";
-  return { clientId, clientSecret, redirectUri, configured: Boolean(clientId && clientSecret) };
+  return {
+    clientId,
+    clientSecret,
+    redirectUri,
+    configured: Boolean(clientId && clientSecret),
+  };
 }
 
 export function buildAuthUrl(state = "teye") {
@@ -73,13 +82,17 @@ export async function exchangeCode(code: string): Promise<YouTubeToken> {
     scope: data.scope,
   };
   if (!token.refresh_token) {
-    throw new Error("No refresh token returned. Revoke app access and reconnect.");
+    throw new Error(
+      "No refresh token returned. Revoke app access and reconnect.",
+    );
   }
   await writeToken(token);
   return token;
 }
 
-export async function refreshAccessToken(token: YouTubeToken): Promise<YouTubeToken> {
+export async function refreshAccessToken(
+  token: YouTubeToken,
+): Promise<YouTubeToken> {
   const { clientId, clientSecret } = getOAuthConfig();
   const res = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
@@ -113,22 +126,36 @@ export async function refreshAccessToken(token: YouTubeToken): Promise<YouTubeTo
 }
 
 export async function readToken(): Promise<YouTubeToken | null> {
+  if (globalForToken.__teyeYouTubeToken) {
+    return globalForToken.__teyeYouTubeToken;
+  }
   try {
     const raw = await fs.readFile(TOKEN_PATH, "utf8");
-    return JSON.parse(raw) as YouTubeToken;
+    const token = JSON.parse(raw) as YouTubeToken;
+    globalForToken.__teyeYouTubeToken = token;
+    return token;
   } catch {
     return null;
   }
 }
 
 export async function writeToken(token: YouTubeToken) {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  const tmp = `${TOKEN_PATH}.${process.pid}.tmp`;
-  await fs.writeFile(tmp, JSON.stringify(token, null, 2), "utf8");
-  await fs.rename(tmp, TOKEN_PATH);
+  globalForToken.__teyeYouTubeToken = token;
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    const tmp = `${TOKEN_PATH}.${process.pid}.tmp`;
+    await fs.writeFile(tmp, JSON.stringify(token, null, 2), "utf8");
+    await fs.rename(tmp, TOKEN_PATH);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(
+      `[youtube] token persist failed (read-only or missing FS): ${msg}`,
+    );
+  }
 }
 
 export async function clearToken() {
+  globalForToken.__teyeYouTubeToken = null;
   try {
     await fs.unlink(TOKEN_PATH);
   } catch {

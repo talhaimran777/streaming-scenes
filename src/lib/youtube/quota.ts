@@ -62,10 +62,15 @@ async function load(): Promise<QuotaState> {
 }
 
 async function persist(state: QuotaState) {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  const tmp = `${QUOTA_PATH}.${process.pid}.tmp`;
-  await fs.writeFile(tmp, JSON.stringify(state, null, 2), "utf8");
-  await fs.rename(tmp, QUOTA_PATH);
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    const tmp = `${QUOTA_PATH}.${process.pid}.tmp`;
+    await fs.writeFile(tmp, JSON.stringify(state, null, 2), "utf8");
+    await fs.rename(tmp, QUOTA_PATH);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`[quota] persist failed (read-only or missing FS): ${msg}`);
+  }
 }
 
 function recompute(state: QuotaState) {

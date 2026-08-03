@@ -19,18 +19,23 @@ async function ensureDataDir() {
   await fs.mkdir(DATA_DIR, { recursive: true });
 }
 
+function logFsWarning(op: string, err: unknown) {
+  const msg = err instanceof Error ? err.message : String(err);
+  console.warn(`[settings] ${op} failed (read-only or missing FS): ${msg}`);
+}
+
 export async function readSettings(): Promise<AppSettings> {
   if (cache) return cache;
-  await ensureDataDir();
   try {
     const raw = await fs.readFile(SETTINGS_PATH, "utf8");
     const parsed = appSettingsSchema.parse(JSON.parse(raw));
     cache = parsed;
     return parsed;
   } catch {
+    // Missing file or unreadable FS — use in-memory defaults.
+    // Do NOT write here: serverless hosts (e.g. Vercel) are read-only.
     const defaults = defaultSettings();
     cache = defaults;
-    await writeSettings(defaults, false);
     return defaults;
   }
 }
@@ -40,14 +45,20 @@ export async function writeSettings(
   emit = true,
 ): Promise<AppSettings> {
   const validated = appSettingsSchema.parse(next);
+  cache = validated;
+
   writeChain = writeChain.then(async () => {
-    await ensureDataDir();
-    const tmp = `${SETTINGS_PATH}.${process.pid}.${Date.now()}.tmp`;
-    await fs.writeFile(tmp, JSON.stringify(validated, null, 2), "utf8");
-    await fs.rename(tmp, SETTINGS_PATH);
+    try {
+      await ensureDataDir();
+      const tmp = `${SETTINGS_PATH}.${process.pid}.${Date.now()}.tmp`;
+      await fs.writeFile(tmp, JSON.stringify(validated, null, 2), "utf8");
+      await fs.rename(tmp, SETTINGS_PATH);
+    } catch (err) {
+      logFsWarning("persist settings", err);
+    }
   });
   await writeChain;
-  cache = validated;
+
   if (emit) {
     bus.emit("settings", validated);
   }
