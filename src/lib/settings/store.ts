@@ -8,6 +8,12 @@ import {
 } from "./schema";
 import type { SceneId } from "../scenes";
 import { bus } from "../sse/bus";
+import {
+  isRemoteStorageConfigured,
+  STORAGE_KEYS,
+  storageGetJson,
+  storageSetJson,
+} from "../storage/redis";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const SETTINGS_PATH = path.join(DATA_DIR, "settings.json");
@@ -24,20 +30,49 @@ function logFsWarning(op: string, err: unknown) {
   console.warn(`[settings] ${op} failed (read-only or missing FS): ${msg}`);
 }
 
-export async function readSettings(): Promise<AppSettings> {
-  if (cache) return cache;
+async function readSettingsFromFs(): Promise<AppSettings | null> {
   try {
     const raw = await fs.readFile(SETTINGS_PATH, "utf8");
-    const parsed = appSettingsSchema.parse(JSON.parse(raw));
-    cache = parsed;
-    return parsed;
+    return appSettingsSchema.parse(JSON.parse(raw));
   } catch {
-    // Missing file or unreadable FS — use in-memory defaults.
-    // Do NOT write here: serverless hosts (e.g. Vercel) are read-only.
+    return null;
+  }
+}
+
+async function writeSettingsToFs(validated: AppSettings) {
+  try {
+    await ensureDataDir();
+    const tmp = `${SETTINGS_PATH}.${process.pid}.${Date.now()}.tmp`;
+    await fs.writeFile(tmp, JSON.stringify(validated, null, 2), "utf8");
+    await fs.rename(tmp, SETTINGS_PATH);
+  } catch (err) {
+    logFsWarning("persist settings", err);
+  }
+}
+
+export async function readSettings(): Promise<AppSettings> {
+  if (cache) return cache;
+
+  if (isRemoteStorageConfigured()) {
+    const remote = await storageGetJson<unknown>(STORAGE_KEYS.settings);
+    if (remote != null) {
+      const parsed = appSettingsSchema.parse(remote);
+      cache = parsed;
+      return parsed;
+    }
     const defaults = defaultSettings();
     cache = defaults;
     return defaults;
   }
+
+  const fromFs = await readSettingsFromFs();
+  if (fromFs) {
+    cache = fromFs;
+    return fromFs;
+  }
+  const defaults = defaultSettings();
+  cache = defaults;
+  return defaults;
 }
 
 export async function writeSettings(
@@ -48,14 +83,16 @@ export async function writeSettings(
   cache = validated;
 
   writeChain = writeChain.then(async () => {
-    try {
-      await ensureDataDir();
-      const tmp = `${SETTINGS_PATH}.${process.pid}.${Date.now()}.tmp`;
-      await fs.writeFile(tmp, JSON.stringify(validated, null, 2), "utf8");
-      await fs.rename(tmp, SETTINGS_PATH);
-    } catch (err) {
-      logFsWarning("persist settings", err);
+    if (isRemoteStorageConfigured()) {
+      try {
+        await storageSetJson(STORAGE_KEYS.settings, validated);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(`[settings] redis persist failed: ${msg}`);
+      }
+      return;
     }
+    await writeSettingsToFs(validated);
   });
   await writeChain;
 

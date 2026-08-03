@@ -5,6 +5,12 @@ import {
   defaultQuotaState,
   type QuotaState,
 } from "../sse/bus";
+import {
+  isRemoteStorageConfigured,
+  STORAGE_KEYS,
+  storageGetJson,
+  storageSetJson,
+} from "../storage/redis";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const QUOTA_PATH = path.join(DATA_DIR, "quota.json");
@@ -34,23 +40,39 @@ function todayKey() {
   return fmt.format(new Date());
 }
 
+function normalizeDay(state: QuotaState): QuotaState {
+  if (state.lastResetDay !== todayKey()) {
+    state.usedToday = 0;
+    state.lastResetDay = todayKey();
+    globalForQuota.__teyeQuotaHistory = [];
+  }
+  return state;
+}
+
 async function load(): Promise<QuotaState> {
   if (globalForQuota.__teyeQuota) {
-    const state = globalForQuota.__teyeQuota;
-    if (state.lastResetDay !== todayKey()) {
-      state.usedToday = 0;
-      state.lastResetDay = todayKey();
-      globalForQuota.__teyeQuotaHistory = [];
-    }
-    return state;
+    return normalizeDay(globalForQuota.__teyeQuota);
   }
+
+  if (isRemoteStorageConfigured()) {
+    const remote = await storageGetJson<QuotaState>(STORAGE_KEYS.quota);
+    if (remote) {
+      const parsed = normalizeDay({ ...defaultQuotaState(), ...remote });
+      globalForQuota.__teyeQuota = parsed;
+      return parsed;
+    }
+    const fresh = defaultQuotaState();
+    fresh.lastResetDay = todayKey();
+    globalForQuota.__teyeQuota = fresh;
+    return fresh;
+  }
+
   try {
     const raw = await fs.readFile(QUOTA_PATH, "utf8");
-    const parsed = { ...defaultQuotaState(), ...JSON.parse(raw) } as QuotaState;
-    if (parsed.lastResetDay !== todayKey()) {
-      parsed.usedToday = 0;
-      parsed.lastResetDay = todayKey();
-    }
+    const parsed = normalizeDay({
+      ...defaultQuotaState(),
+      ...JSON.parse(raw),
+    } as QuotaState);
     globalForQuota.__teyeQuota = parsed;
     return parsed;
   } catch {
@@ -62,6 +84,16 @@ async function load(): Promise<QuotaState> {
 }
 
 async function persist(state: QuotaState) {
+  if (isRemoteStorageConfigured()) {
+    try {
+      await storageSetJson(STORAGE_KEYS.quota, state);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`[quota] redis persist failed: ${msg}`);
+    }
+    return;
+  }
+
   try {
     await fs.mkdir(DATA_DIR, { recursive: true });
     const tmp = `${QUOTA_PATH}.${process.pid}.tmp`;
@@ -79,12 +111,11 @@ function recompute(state: QuotaState) {
   const windowMs = 15 * 60 * 1000;
   const recent = history.filter((t) => now - t < windowMs);
   globalForQuota.__teyeQuotaHistory = recent;
-  const unitsInWindow = recent.length
-    ? // approximate: we store timestamps per unit via pushCost
-      recent.length
-    : 0;
+  const unitsInWindow = recent.length ? recent.length : 0;
   const hourly =
-    unitsInWindow > 0 ? (unitsInWindow / (windowMs / 1000)) * 3600 : state.estimatedHourlyBurn;
+    unitsInWindow > 0
+      ? (unitsInWindow / (windowMs / 1000)) * 3600
+      : state.estimatedHourlyBurn;
   state.estimatedHourlyBurn = Math.round(hourly);
   const remaining = Math.max(0, state.dailyLimit - state.usedToday);
   state.hoursRemaining =

@@ -1,5 +1,12 @@
 import { promises as fs } from "fs";
 import path from "path";
+import {
+  isRemoteStorageConfigured,
+  STORAGE_KEYS,
+  storageDel,
+  storageGetJson,
+  storageSetJson,
+} from "../storage/redis";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const TOKEN_PATH = path.join(DATA_DIR, "youtube-token.json");
@@ -129,6 +136,16 @@ export async function readToken(): Promise<YouTubeToken | null> {
   if (globalForToken.__teyeYouTubeToken) {
     return globalForToken.__teyeYouTubeToken;
   }
+
+  if (isRemoteStorageConfigured()) {
+    const token = await storageGetJson<YouTubeToken>(STORAGE_KEYS.youtubeToken);
+    if (token?.refresh_token) {
+      globalForToken.__teyeYouTubeToken = token;
+      return token;
+    }
+    return null;
+  }
+
   try {
     const raw = await fs.readFile(TOKEN_PATH, "utf8");
     const token = JSON.parse(raw) as YouTubeToken;
@@ -141,6 +158,17 @@ export async function readToken(): Promise<YouTubeToken | null> {
 
 export async function writeToken(token: YouTubeToken) {
   globalForToken.__teyeYouTubeToken = token;
+
+  if (isRemoteStorageConfigured()) {
+    try {
+      await storageSetJson(STORAGE_KEYS.youtubeToken, token);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`[youtube] redis token persist failed: ${msg}`);
+    }
+    return;
+  }
+
   try {
     await fs.mkdir(DATA_DIR, { recursive: true });
     const tmp = `${TOKEN_PATH}.${process.pid}.tmp`;
@@ -156,6 +184,12 @@ export async function writeToken(token: YouTubeToken) {
 
 export async function clearToken() {
   globalForToken.__teyeYouTubeToken = null;
+
+  if (isRemoteStorageConfigured()) {
+    await storageDel(STORAGE_KEYS.youtubeToken);
+    return;
+  }
+
   try {
     await fs.unlink(TOKEN_PATH);
   } catch {
