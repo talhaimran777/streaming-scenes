@@ -27,7 +27,7 @@ function guessOrientation(title: string): LiveBroadcastInfo["orientationHint"] {
 
 export async function listActiveBroadcasts(): Promise<LiveBroadcastInfo[]> {
   const data = (await ytFetch(
-    `${YT}/liveBroadcasts?part=snippet,contentDetails,status&broadcastStatus=active&maxResults=10&mine=true`,
+    `${YT}/liveBroadcasts?part=snippet,contentDetails,status&broadcastStatus=active&broadcastType=all&maxResults=10`,
     "liveBroadcastsList",
   )) as {
     items?: Array<{
