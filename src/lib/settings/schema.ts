@@ -139,6 +139,8 @@ export const justChattingSchema = z.object({
   showCameraFrame: z.boolean().default(true),
   showCameraLabel: z.boolean().default(true),
   cameraLabel: z.string().default("CAMERA"),
+  cameraWidthVertical: z.number().default(1000),
+  cameraHeightVertical: z.number().default(790),
   showChatPanel: z.boolean().default(true),
   chatPanelLabel: z.string().default("CHAT"),
   showViewerCount: z.boolean().default(true),

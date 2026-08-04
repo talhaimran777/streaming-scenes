@@ -488,6 +488,20 @@ function renderFields(
           <Toggle label="Hide bot messages" checked={!!d.hideBotMessages} onChange={(v) => u("hideBotMessages", v)} />
           <Toggle label="Hide !commands" checked={!!d.hideCommandMessages} onChange={(v) => u("hideCommandMessages", v)} />
         </Section>
+        <Section title="Camera size (vertical)">
+          <Field label="Width (px)" hint="Default 1000 (full width with 40px side margins)">
+            <TextInput
+              value={String(d.cameraWidthVertical)}
+              onChange={(v) => u("cameraWidthVertical", Number(v) || 1000)}
+            />
+          </Field>
+          <Field label="Height (px)" hint="Default 790">
+            <TextInput
+              value={String(d.cameraHeightVertical)}
+              onChange={(v) => u("cameraHeightVertical", Number(v) || 790)}
+            />
+          </Field>
+        </Section>
         <Section title="Copy">
           <Field label="Badge text"><TextInput value={String(d.badgeText)} onChange={(v) => u("badgeText", v)} /></Field>
           <Field label="Camera label"><TextInput value={String(d.cameraLabel)} onChange={(v) => u("cameraLabel", v)} /></Field>

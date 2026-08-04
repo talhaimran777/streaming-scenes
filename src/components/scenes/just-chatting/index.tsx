@@ -320,119 +320,127 @@ export function JustChattingVertical({
           <LiveBadge text={settings.badgeText} size="sm" />
         </div>
 
-        {settings.showCameraFrame && (
-          <div
-            style={{
-              position: "absolute",
-              left: 40,
-              right: 40,
-              top: 270,
-              bottom: 548,
-            }}
-          >
-            <CornerFrame
-              label={settings.cameraLabel}
-              showLabel={settings.showCameraLabel}
-              fill={!settings.transparentBackground}
-              size={48}
-              thick={6}
-            />
-          </div>
-        )}
-
-        {settings.showChatPanel && (
-          <div
-            style={{
-              position: "absolute",
-              left: 40,
-              right: 40,
-              bottom: 142,
-              height: 376,
-              border: "1px solid rgba(255,255,255,.12)",
-              background: "rgba(12,12,16,.9)",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: 270,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 32,
+          }}
+        >
+          {settings.showCameraFrame && (
             <div
               style={{
-                height: 5,
-                background: "linear-gradient(90deg,#8B5CF6,#E8192C)",
+                position: "relative",
+                width: settings.cameraWidthVertical,
+                height: settings.cameraHeightVertical,
+                flexShrink: 0,
               }}
-            />
+            >
+              <CornerFrame
+                label={settings.cameraLabel}
+                showLabel={settings.showCameraLabel}
+                fill={!settings.transparentBackground}
+                size={48}
+                thick={6}
+              />
+            </div>
+          )}
+
+          {settings.showChatPanel && (
             <div
               style={{
-                padding: "22px 28px",
-                borderBottom: "1px solid rgba(255,255,255,.1)",
+                width: "calc(100% - 80px)",
+                height: 376,
+                border: "1px solid rgba(255,255,255,.12)",
+                background: "rgba(12,12,16,.9)",
                 display: "flex",
-                justifyContent: "space-between",
+                flexDirection: "column",
+                flexShrink: 0,
               }}
             >
               <div
                 style={{
-                  fontFamily: "var(--font-jetbrains), monospace",
-                  fontSize: 20,
-                  letterSpacing: "0.26em",
-                  color: "#8A8A93",
+                  height: 5,
+                  background: "linear-gradient(90deg,#8B5CF6,#E8192C)",
+                }}
+              />
+              <div
+                style={{
+                  padding: "22px 28px",
+                  borderBottom: "1px solid rgba(255,255,255,.1)",
+                  display: "flex",
+                  justifyContent: "space-between",
                 }}
               >
-                {settings.chatPanelLabel}
-              </div>
-              {settings.showViewerCount && (
                 <div
                   style={{
                     fontFamily: "var(--font-jetbrains), monospace",
                     fontSize: 20,
-                    color: "#FF3B3B",
+                    letterSpacing: "0.26em",
+                    color: "#8A8A93",
                   }}
                 >
-                  {viewers} {settings.watchingSuffix}
+                  {settings.chatPanelLabel}
+                </div>
+                {settings.showViewerCount && (
+                  <div
+                    style={{
+                      fontFamily: "var(--font-jetbrains), monospace",
+                      fontSize: 20,
+                      color: "#FF3B3B",
+                    }}
+                  >
+                    {viewers} {settings.watchingSuffix}
+                  </div>
+                )}
+              </div>
+              <ChatFeed messages={messages} />
+              {settings.showLatestSubscriber &&
+                (latestSubscriber || settings.latestSubscriberFallback) && (
+                <div
+                  style={{
+                    padding: "18px 28px",
+                    borderTop: "1px solid rgba(255,255,255,.1)",
+                    fontFamily: "var(--font-jetbrains), monospace",
+                    fontSize: 18,
+                    color: "#8A8A93",
+                  }}
+                >
+                  {settings.latestFollowerLabelShort} ·{" "}
+                  <span style={{ color: "#fff", fontWeight: 600 }}>
+                    {latestSubscriber || settings.latestSubscriberFallback}
+                  </span>
                 </div>
               )}
             </div>
-            <ChatFeed messages={messages} />
-            {settings.showLatestSubscriber &&
-              (latestSubscriber || settings.latestSubscriberFallback) && (
-              <div
-                style={{
-                  padding: "18px 28px",
-                  borderTop: "1px solid rgba(255,255,255,.1)",
-                  fontFamily: "var(--font-jetbrains), monospace",
-                  fontSize: 18,
-                  color: "#8A8A93",
-                }}
-              >
-                {settings.latestFollowerLabelShort} ·{" "}
-                <span style={{ color: "#fff", fontWeight: 600 }}>
-                  {latestSubscriber || settings.latestSubscriberFallback}
-                </span>
-              </div>
-            )}
-          </div>
-        )}
+          )}
 
-        {settings.showSocials && (
-          <div
-            style={{
-              position: "absolute",
-              left: 0,
-              right: 0,
-              bottom: 0,
-              height: 110,
-              borderTop: "1px solid rgba(255,255,255,.12)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <SocialRail
-              items={global.socials}
-              gap={28}
-              fontSize={24}
-              maxWidth={1000}
-            />
-          </div>
-        )}
+          {settings.showSocials && (
+            <div
+              style={{
+                alignSelf: "stretch",
+                height: 110,
+                borderTop: "1px solid rgba(255,255,255,.12)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <SocialRail
+                items={global.socials}
+                gap={28}
+                fontSize={24}
+                maxWidth={1000}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
