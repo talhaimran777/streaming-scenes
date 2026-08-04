@@ -52,7 +52,10 @@ export function SceneView({
 
   const { settings, live } = data;
   const transparent =
-    scene === "live" && settings.scenes.live.transparentBackground && !preview;
+    !preview &&
+    ((scene === "live" && settings.scenes.live.transparentBackground) ||
+      (scene === "just-chatting" &&
+        settings.scenes["just-chatting"].transparentBackground));
 
   const content =
     scene === "starting-soon" ? (
