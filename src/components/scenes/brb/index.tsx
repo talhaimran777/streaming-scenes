@@ -167,6 +167,8 @@ export function BrbHorizontal({ global, settings }: Props) {
 }
 
 export function BrbVertical({ global, settings }: Props) {
+  const safe = global.verticalSafeAreaPx;
+
   return (
     <div style={{ position: "absolute", inset: 0, background: "#07070a" }}>
       {settings.showGlow && (
@@ -191,128 +193,138 @@ export function BrbVertical({ global, settings }: Props) {
       />
       <ScanlineOverlay show={settings.showScanlines} />
 
-      <div style={{ position: "absolute", left: 72, top: 110 }}>
-        <BrandMark
-          brand={global.brand}
-          handle={global.handle}
-          brandSize={46}
-          handleSize={22}
-          row={false}
-        />
-      </div>
-
       <div
         style={{
           position: "absolute",
-          left: 72,
-          right: 72,
-          top: "50%",
-          transform: "translateY(-50%)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 30,
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: safe,
         }}
       >
-        {settings.showPulseRing && (
+        <div style={{ position: "absolute", left: 72, top: 110 }}>
+          <BrandMark
+            brand={global.brand}
+            handle={global.handle}
+            brandSize={46}
+            handleSize={22}
+            row={false}
+          />
+        </div>
+
+        <div
+          style={{
+            position: "absolute",
+            left: 72,
+            right: 72,
+            top: "52%",
+            transform: "translateY(-50%)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 30,
+          }}
+        >
+          {settings.showPulseRing && (
+            <div
+              style={{
+                position: "relative",
+                width: 110,
+                height: 110,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                className="teye-ring"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  border: "2px solid rgba(232,25,44,.9)",
+                }}
+              />
+              <div
+                className="teye-pulse"
+                style={{ width: 24, height: 24, background: "#E8192C" }}
+              />
+            </div>
+          )}
           <div
             style={{
-              position: "relative",
-              width: 110,
+              fontFamily: "var(--font-jetbrains), monospace",
+              fontSize: 24,
+              letterSpacing: "0.34em",
+              color: "#E8192C",
+            }}
+          >
+            {settings.kicker}
+          </div>
+          <div
+            style={{
+              fontSize: 150,
+              fontWeight: 700,
+              lineHeight: 0.9,
+              letterSpacing: "-0.04em",
+              textAlign: "center",
+              textShadow: "0 0 60px rgba(232,25,44,.35)",
+            }}
+          >
+            {settings.headlineVerticalLines.map((line) => (
+              <div key={line}>{line}</div>
+            ))}
+          </div>
+          <div style={{ fontSize: 38, color: "#B4B4BC", textAlign: "center" }}>
+            {settings.subtextVertical}
+          </div>
+          {settings.showSweepBar && (
+            <div
+              style={{
+                width: 520,
+                height: 6,
+                background: "rgba(255,255,255,.08)",
+                overflow: "hidden",
+                position: "relative",
+              }}
+            >
+              <div
+                className="teye-sweep"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "30%",
+                  background:
+                    "linear-gradient(90deg,transparent,#E8192C,transparent)",
+                }}
+              />
+            </div>
+          )}
+        </div>
+
+        {settings.showSocials && (
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              bottom: 0,
               height: 110,
+              borderTop: "1px solid rgba(255,255,255,.12)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <div
-              className="teye-ring"
-              style={{
-                position: "absolute",
-                inset: 0,
-                border: "2px solid rgba(232,25,44,.9)",
-              }}
-            />
-            <div
-              className="teye-pulse"
-              style={{ width: 24, height: 24, background: "#E8192C" }}
-            />
-          </div>
-        )}
-        <div
-          style={{
-            fontFamily: "var(--font-jetbrains), monospace",
-            fontSize: 24,
-            letterSpacing: "0.34em",
-            color: "#E8192C",
-          }}
-        >
-          {settings.kicker}
-        </div>
-        <div
-          style={{
-            fontSize: 150,
-            fontWeight: 700,
-            lineHeight: 0.9,
-            letterSpacing: "-0.04em",
-            textAlign: "center",
-            textShadow: "0 0 60px rgba(232,25,44,.35)",
-          }}
-        >
-          {settings.headlineVerticalLines.map((line) => (
-            <div key={line}>{line}</div>
-          ))}
-        </div>
-        <div style={{ fontSize: 38, color: "#B4B4BC", textAlign: "center" }}>
-          {settings.subtextVertical}
-        </div>
-        {settings.showSweepBar && (
-          <div
-            style={{
-              width: 520,
-              height: 6,
-              background: "rgba(255,255,255,.08)",
-              overflow: "hidden",
-              position: "relative",
-            }}
-          >
-            <div
-              className="teye-sweep"
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "30%",
-                background:
-                  "linear-gradient(90deg,transparent,#E8192C,transparent)",
-              }}
+            <SocialRail
+              items={global.socials.slice(0, 2).map((s) => ({
+                label: s.label === "INSTAGRAM" ? "IG" : s.label,
+                value: s.value,
+              }))}
+              fontSize={24}
             />
           </div>
         )}
       </div>
-
-      {settings.showSocials && (
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: 110,
-            borderTop: "1px solid rgba(255,255,255,.12)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <SocialRail
-            items={global.socials.slice(0, 2).map((s) => ({
-              label: s.label === "INSTAGRAM" ? "IG" : s.label,
-              value: s.value,
-            }))}
-            fontSize={24}
-          />
-        </div>
-      )}
     </div>
   );
 }

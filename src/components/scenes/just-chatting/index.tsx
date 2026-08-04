@@ -233,6 +233,7 @@ export function JustChattingVertical({
   chat,
 }: Props) {
   const messages = chat.slice(-Math.min(settings.maxMessages, 3));
+  const safe = global.verticalSafeAreaPx;
 
   return (
     <div style={{ position: "absolute", inset: 0, background: "#07070a" }}>
@@ -257,135 +258,145 @@ export function JustChattingVertical({
       <div
         style={{
           position: "absolute",
-          left: 40,
-          right: 40,
-          top: 120,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: safe,
         }}
       >
         <div
-          style={{ fontSize: 44, fontWeight: 700, letterSpacing: "0.16em" }}
-        >
-          {global.brand}
-        </div>
-        <LiveBadge text={settings.badgeText} size="sm" />
-      </div>
-
-      {settings.showCameraFrame && (
-        <div
           style={{
             position: "absolute",
             left: 40,
             right: 40,
-            top: 280,
-            height: 920,
-          }}
-        >
-          <CornerFrame
-            label={settings.cameraLabel}
-            showLabel={settings.showCameraLabel}
-            size={48}
-            thick={6}
-          />
-        </div>
-      )}
-
-      {settings.showChatPanel && (
-        <div
-          style={{
-            position: "absolute",
-            left: 40,
-            right: 40,
-            top: 1250,
-            bottom: 150,
-            border: "1px solid rgba(255,255,255,.12)",
-            background: "rgba(12,12,16,.9)",
+            top: 120,
             display: "flex",
-            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
           <div
-            style={{
-              height: 5,
-              background: "linear-gradient(90deg,#8B5CF6,#E8192C)",
-            }}
-          />
+            style={{ fontSize: 44, fontWeight: 700, letterSpacing: "0.16em" }}
+          >
+            {global.brand}
+          </div>
+          <LiveBadge text={settings.badgeText} size="sm" />
+        </div>
+
+        {settings.showCameraFrame && (
           <div
             style={{
-              padding: "22px 28px",
-              borderBottom: "1px solid rgba(255,255,255,.1)",
+              position: "absolute",
+              left: 40,
+              right: 40,
+              top: 270,
+              bottom: 548,
+            }}
+          >
+            <CornerFrame
+              label={settings.cameraLabel}
+              showLabel={settings.showCameraLabel}
+              size={48}
+              thick={6}
+            />
+          </div>
+        )}
+
+        {settings.showChatPanel && (
+          <div
+            style={{
+              position: "absolute",
+              left: 40,
+              right: 40,
+              bottom: 142,
+              height: 376,
+              border: "1px solid rgba(255,255,255,.12)",
+              background: "rgba(12,12,16,.9)",
               display: "flex",
-              justifyContent: "space-between",
+              flexDirection: "column",
             }}
           >
             <div
               style={{
-                fontFamily: "var(--font-jetbrains), monospace",
-                fontSize: 20,
-                letterSpacing: "0.26em",
-                color: "#8A8A93",
+                height: 5,
+                background: "linear-gradient(90deg,#8B5CF6,#E8192C)",
+              }}
+            />
+            <div
+              style={{
+                padding: "22px 28px",
+                borderBottom: "1px solid rgba(255,255,255,.1)",
+                display: "flex",
+                justifyContent: "space-between",
               }}
             >
-              {settings.chatPanelLabel}
-            </div>
-            {settings.showViewerCount && (
               <div
                 style={{
                   fontFamily: "var(--font-jetbrains), monospace",
                   fontSize: 20,
-                  color: "#FF3B3B",
+                  letterSpacing: "0.26em",
+                  color: "#8A8A93",
                 }}
               >
-                {viewers} {settings.watchingSuffix}
+                {settings.chatPanelLabel}
+              </div>
+              {settings.showViewerCount && (
+                <div
+                  style={{
+                    fontFamily: "var(--font-jetbrains), monospace",
+                    fontSize: 20,
+                    color: "#FF3B3B",
+                  }}
+                >
+                  {viewers} {settings.watchingSuffix}
+                </div>
+              )}
+            </div>
+            <ChatFeed messages={messages} />
+            {settings.showLatestSubscriber &&
+              (latestSubscriber || settings.latestSubscriberFallback) && (
+              <div
+                style={{
+                  padding: "18px 28px",
+                  borderTop: "1px solid rgba(255,255,255,.1)",
+                  fontFamily: "var(--font-jetbrains), monospace",
+                  fontSize: 18,
+                  color: "#8A8A93",
+                }}
+              >
+                {settings.latestFollowerLabelShort} ·{" "}
+                <span style={{ color: "#fff", fontWeight: 600 }}>
+                  {latestSubscriber || settings.latestSubscriberFallback}
+                </span>
               </div>
             )}
           </div>
-          <ChatFeed messages={messages} />
-          {settings.showLatestSubscriber &&
-            (latestSubscriber || settings.latestSubscriberFallback) && (
-            <div
-              style={{
-                padding: "18px 28px",
-                borderTop: "1px solid rgba(255,255,255,.1)",
-                fontFamily: "var(--font-jetbrains), monospace",
-                fontSize: 18,
-                color: "#8A8A93",
-              }}
-            >
-              {settings.latestFollowerLabelShort} ·{" "}
-              <span style={{ color: "#fff", fontWeight: 600 }}>
-                {latestSubscriber || settings.latestSubscriberFallback}
-              </span>
-            </div>
-          )}
-        </div>
-      )}
+        )}
 
-      {settings.showSocials && (
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: 110,
-            borderTop: "1px solid rgba(255,255,255,.12)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <SocialRail
-            items={global.socials
-              .filter((s) => ["TWITCH", "TIKTOK"].includes(s.label))
-              .slice(0, 2)}
-            gap={28}
-            fontSize={24}
-          />
-        </div>
-      )}
+        {settings.showSocials && (
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: 110,
+              borderTop: "1px solid rgba(255,255,255,.12)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <SocialRail
+              items={global.socials
+                .filter((s) => ["TWITCH", "TIKTOK"].includes(s.label))
+                .slice(0, 2)}
+              gap={28}
+              fontSize={24}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

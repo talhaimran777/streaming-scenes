@@ -366,6 +366,7 @@ export function LiveVertical({
   const title =
     settings.overrideTitle ?? streamTitle ?? resolveStreamTitle(global);
   const uptime = formatUptime(uptimeSeconds);
+  const safe = global.verticalSafeAreaPx;
 
   return (
     <div
@@ -375,198 +376,314 @@ export function LiveVertical({
         background: settings.transparentBackground ? "transparent" : "#0d0d11",
       }}
     >
-      {settings.showTopBar && (
+      {!settings.transparentBackground && (
         <div
           style={{
             position: "absolute",
-            left: 0,
-            right: 0,
-            top: 0,
-            height: 140,
+            inset: 0,
             background:
-              "linear-gradient(180deg,rgba(7,7,10,.96),rgba(7,7,10,.6))",
-            borderBottom: "1px solid rgba(255,255,255,.10)",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            gap: 8,
-            padding: "0 40px",
+              "repeating-linear-gradient(45deg,rgba(255,255,255,.02) 0 22px,transparent 22px 44px)",
           }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-            {settings.showLiveBadge && (
-              <LiveBadge size="sm" text={settings.liveBadgeText} />
-            )}
-            {settings.showBrand && (
-              <>
+        />
+      )}
+
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: safe,
+        }}
+      >
+        {settings.showTopBar && (
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: 0,
+              height: 132,
+              background:
+                "linear-gradient(180deg,rgba(7,7,10,.96),rgba(7,7,10,.6))",
+              borderBottom: "1px solid rgba(255,255,255,.10)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "0 36px",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+              {settings.showLiveBadge && (
+                <LiveBadge size="sm" text={settings.liveBadgeText} />
+              )}
+              {settings.showBrand && (
+                <>
+                  <div
+                    style={{
+                      fontSize: 36,
+                      fontWeight: 700,
+                      letterSpacing: "0.14em",
+                    }}
+                  >
+                    {global.brand}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-jetbrains), monospace",
+                      fontSize: 20,
+                      letterSpacing: "0.2em",
+                      color: "#8A8A93",
+                    }}
+                  >
+                    {global.handle}
+                  </div>
+                </>
+              )}
+            </div>
+            {settings.showUptime && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  gap: 4,
+                  fontFamily: "var(--font-jetbrains), monospace",
+                }}
+              >
                 <div
                   style={{
-                    fontSize: 34,
-                    fontWeight: 700,
-                    letterSpacing: "0.14em",
-                  }}
-                >
-                  {global.brand}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-jetbrains), monospace",
                     fontSize: 20,
                     letterSpacing: "0.2em",
                     color: "#8A8A93",
                   }}
                 >
-                  {global.handle}
+                  {settings.uptimePrefix}
                 </div>
-              </>
+                <div
+                  style={{
+                    fontSize: 26,
+                    fontWeight: 700,
+                    letterSpacing: "0.08em",
+                  }}
+                >
+                  {uptime}
+                </div>
+              </div>
             )}
           </div>
-          {(settings.showTitle || settings.showUptime) && (
+        )}
+
+        {settings.showFacecam && (
+          <div
+            style={{
+              position: "absolute",
+              left: 36,
+              right: 36,
+              top: 172,
+              height: 576,
+            }}
+          >
+            <CornerFrame
+              label={settings.facecamLabel}
+              showLabel={settings.showFacecamLabel}
+              size={52}
+              thick={6}
+            />
             <div
               style={{
-                fontFamily: "var(--font-jetbrains), monospace",
-                fontSize: 22,
-                letterSpacing: "0.1em",
-                color: "#B4B4BC",
+                position: "absolute",
+                left: 0,
+                bottom: 0,
+                display: "flex",
+                alignItems: "center",
+                gap: 14,
+                height: 52,
+                padding: "0 22px",
+                background: "#E8192C",
+                zIndex: 2,
               }}
             >
-              {settings.showTitle ? title : ""}
-              {settings.showTitle && settings.showUptime ? " · " : ""}
-              {settings.showUptime
-                ? `${settings.uptimePrefix} ${uptime}`
-                : ""}
+              <div
+                style={{
+                  fontFamily: "var(--font-jetbrains), monospace",
+                  fontSize: 20,
+                  fontWeight: 700,
+                  letterSpacing: "0.24em",
+                }}
+              >
+                {global.brand}
+              </div>
+              {settings.showAudioBars && <AudioBars />}
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        )}
 
-      {settings.showGameCaptureGuide && (
-        <div
-          style={{
-            position: "absolute",
-            left: 40,
-            right: 40,
-            top: 300,
-            height: 900,
-            border: "2px dashed rgba(255,255,255,.14)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-            gap: 12,
-            pointerEvents: "none",
-          }}
-        >
+        {settings.showGameCaptureGuide && (
           <div
             style={{
-              fontFamily: "var(--font-jetbrains), monospace",
-              fontSize: 26,
-              letterSpacing: "0.3em",
-              color: "#4E4E58",
+              position: "absolute",
+              left: 36,
+              right: 36,
+              top: 788,
+              bottom: 118,
             }}
           >
-            GAME CAPTURE
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                border: "2px dashed rgba(255,255,255,.16)",
+                background: "rgba(12,12,16,.35)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+                gap: 10,
+                pointerEvents: "none",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "var(--font-jetbrains), monospace",
+                  fontSize: 26,
+                  letterSpacing: "0.3em",
+                  color: "#4E4E58",
+                }}
+              >
+                GAME CAPTURE
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-jetbrains), monospace",
+                  fontSize: 18,
+                  letterSpacing: "0.18em",
+                  color: "#3A3A42",
+                }}
+              >
+                FULL 16:9 — NOTHING CROPPED
+              </div>
+            </div>
+            <div
+              style={{
+                position: "absolute",
+                left: -3,
+                top: -3,
+                width: 52,
+                height: 52,
+                borderLeft: "6px solid #8B5CF6",
+                borderTop: "6px solid #8B5CF6",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                right: -3,
+                bottom: -3,
+                width: 52,
+                height: 52,
+                borderRight: "6px solid #E8192C",
+                borderBottom: "6px solid #E8192C",
+              }}
+            />
+            {settings.showTitle && (
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  height: 48,
+                  padding: "0 22px",
+                  background: "rgba(7,7,10,.92)",
+                  borderRight: "3px solid #E8192C",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "var(--font-jetbrains), monospace",
+                    fontSize: 20,
+                    letterSpacing: "0.2em",
+                    color: "#DDDDE2",
+                  }}
+                >
+                  {title}
+                </div>
+              </div>
+            )}
           </div>
+        )}
+
+        {settings.showStatsRail && (
           <div
             style={{
-              fontFamily: "var(--font-jetbrains), monospace",
-              fontSize: 18,
-              letterSpacing: "0.2em",
-              color: "#3A3A42",
+              position: "absolute",
+              left: 36,
+              right: 36,
+              bottom: 96,
+              display: "grid",
+              gridTemplateColumns: "1.4fr 1fr 1fr",
+              gap: 16,
             }}
           >
-            CROP TO 9:16 SAFE AREA
+            {settings.showRating && (
+              <StatCard
+                label={settings.ratingLabelVertical}
+                value={settings.rating}
+                accentBar
+                compact
+              />
+            )}
+            {settings.showKd && (
+              <StatCard label={settings.kdLabel} value={settings.kd} compact />
+            )}
+            {settings.showHs && (
+              <StatCard label={settings.hsLabel} value={settings.hs} compact />
+            )}
           </div>
-        </div>
-      )}
+        )}
 
-      {settings.showStatsRail && (
-        <div
-          style={{
-            position: "absolute",
-            left: 40,
-            right: 40,
-            top: 1250,
-            display: "grid",
-            gridTemplateColumns: "1.4fr 1fr 1fr",
-            gap: 16,
-          }}
-        >
-          {settings.showRating && (
-            <StatCard
-              label={settings.ratingLabelVertical}
-              value={settings.rating}
-              accentBar
-              compact
-            />
-          )}
-          {settings.showKd && (
-            <StatCard label={settings.kdLabel} value={settings.kd} compact />
-          )}
-          {settings.showHs && (
-            <StatCard label={settings.hsLabel} value={settings.hs} compact />
-          )}
-        </div>
-      )}
-
-      {settings.showFacecam && (
-        <div
-          style={{
-            position: "absolute",
-            left: 40,
-            bottom: 180,
-            width: 440,
-            height: 248,
-          }}
-        >
-          <CornerFrame
-            label={settings.facecamLabel}
-            showLabel={settings.showFacecamLabel}
-            size={40}
-            thick={5}
-          />
-        </div>
-      )}
-
-      {settings.showBottomBar && (
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: 110,
-            background: "rgba(7,7,10,.94)",
-            borderTop: "1px solid rgba(255,255,255,.10)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0 40px",
-          }}
-        >
-          {settings.showSocials ? (
-            <SocialRail
-              items={global.socials.slice(0, 2).map((s) => ({
-                label: s.label === "INSTAGRAM" ? "IG" : s.label,
-                value: s.value,
-              }))}
-              gap={26}
-              fontSize={24}
-            />
-          ) : (
-            <div />
-          )}
+        {settings.showBottomBar && (
           <div
             style={{
+              position: "absolute",
+              left: 36,
+              right: 36,
+              bottom: 18,
+              height: 66,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
               fontFamily: "var(--font-jetbrains), monospace",
               fontSize: 22,
-              color: "#8A8A93",
+              letterSpacing: "0.14em",
+              color: "#B4B4BC",
             }}
           >
-            {settings.commandsTextVertical}
+            {settings.showSocials ? (
+              <SocialRail
+                items={global.socials
+                  .filter(
+                    (s) =>
+                      ["TWITCH", "TIKTOK", "INSTAGRAM"].includes(s.label) ||
+                      s.label === "IG",
+                  )
+                  .slice(0, 3)
+                  .map((s) => ({
+                    label: s.label === "INSTAGRAM" ? "IG" : s.label,
+                    value: s.value,
+                  }))}
+                gap={24}
+                fontSize={22}
+              />
+            ) : (
+              <div />
+            )}
+            <div style={{ color: "#8A8A93" }}>{settings.commandsTextVertical}</div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

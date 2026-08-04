@@ -135,11 +135,13 @@ export function Ticker({
   badge,
   height = 96,
   fast = false,
+  bottomOffset = 0,
 }: {
   items: string[];
   badge: string;
   height?: number;
   fast?: boolean;
+  bottomOffset?: number;
 }) {
   const row = (
     <div
@@ -168,7 +170,7 @@ export function Ticker({
         position: "absolute",
         left: 0,
         right: 0,
-        bottom: 0,
+        bottom: bottomOffset,
         height,
         borderTop: "1px solid rgba(255,255,255,0.12)",
         background: "rgba(9,9,12,0.92)",

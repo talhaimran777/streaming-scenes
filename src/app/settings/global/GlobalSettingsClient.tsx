@@ -21,13 +21,13 @@ function parseInterval(
 ): { ok: true; value: number } | { ok: false; error: string } {
   const trimmed = raw.trim();
   if (!/^\d+$/.test(trimmed)) {
-    return { ok: false, error: `${label} must be a whole number (ms).` };
+    return { ok: false, error: `${label} must be a whole number.` };
   }
   const value = Number(trimmed);
   if (value < min || value > max) {
     return {
       ok: false,
-      error: `${label} must be between ${min} and ${max} ms.`,
+      error: `${label} must be between ${min} and ${max}.`,
     };
   }
   return { ok: true, value };
@@ -39,6 +39,7 @@ export default function GlobalSettingsPage() {
   const [chatInterval, setChatInterval] = useState("");
   const [viewersInterval, setViewersInterval] = useState("");
   const [subsInterval, setSubsInterval] = useState("");
+  const [safeArea, setSafeArea] = useState("");
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -53,6 +54,7 @@ export default function GlobalSettingsPage() {
     setChatInterval(String(global.chatPollIntervalMs));
     setViewersInterval(String(global.viewersPollIntervalMs));
     setSubsInterval(String(global.subscribersPollIntervalMs));
+    setSafeArea(String(global.verticalSafeAreaPx));
   }, [ready, dirty, data.settings.global]);
 
   const update = <K extends keyof GlobalSettings>(
@@ -105,12 +107,18 @@ export default function GlobalSettingsPage() {
       setError(subs.error);
       return;
     }
+    const area = parseInterval(safeArea, "Mobile chat safe area", 0, 700);
+    if (!area.ok) {
+      setError(area.error);
+      return;
+    }
 
     const next: GlobalSettings = {
       ...draft,
       chatPollIntervalMs: chat.value,
       viewersPollIntervalMs: viewers.value,
       subscribersPollIntervalMs: subs.value,
+      verticalSafeAreaPx: area.value,
     };
 
     setSaving(true);
@@ -121,6 +129,7 @@ export default function GlobalSettingsPage() {
       setChatInterval(String(next.chatPollIntervalMs));
       setViewersInterval(String(next.viewersPollIntervalMs));
       setSubsInterval(String(next.subscribersPollIntervalMs));
+      setSafeArea(String(next.verticalSafeAreaPx));
       setDirty(false);
       setSaved(true);
     } catch (err) {
@@ -306,6 +315,18 @@ export default function GlobalSettingsPage() {
                         }),
                     )
                   }
+                />
+              </Field>
+            </Section>
+
+            <Section title="Vertical layout">
+              <Field
+                label="Mobile chat safe area (px)"
+                hint="Bottom strip kept clear on 1080×1920 scenes. 0 = layout fills the frame."
+              >
+                <TextInput
+                  value={safeArea}
+                  onChange={(v) => onIntervalChange(setSafeArea, v)}
                 />
               </Field>
             </Section>
