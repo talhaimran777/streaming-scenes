@@ -291,7 +291,7 @@ export function StartingSoonVertical({ global, settings }: Props) {
 
         {settings.showTicker && (
           <Ticker
-            items={settings.tickerItems.slice(0, 3)}
+            items={settings.tickerItems}
             badge={settings.standbyText}
             height={120}
             fast

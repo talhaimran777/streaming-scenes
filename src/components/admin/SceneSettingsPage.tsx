@@ -477,6 +477,7 @@ function renderFields(
     return (
       <>
         <Section title="Visibility">
+          <Toggle label="Transparent background (OBS)" checked={!!d.transparentBackground} onChange={(v) => u("transparentBackground", v)} />
           <Toggle label="Camera frame" checked={!!d.showCameraFrame} onChange={(v) => u("showCameraFrame", v)} />
           <Toggle label="Camera label" checked={!!d.showCameraLabel} onChange={(v) => u("showCameraLabel", v)} />
           <Toggle label="Chat panel" checked={!!d.showChatPanel} onChange={(v) => u("showChatPanel", v)} />

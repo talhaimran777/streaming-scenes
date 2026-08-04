@@ -139,12 +139,7 @@ export function BrbHorizontal({ global, settings }: Props) {
 
       {settings.showSocials && (
         <div style={{ position: "absolute", left: 56, bottom: 52 }}>
-          <SocialRail
-            items={global.socials.slice(0, 2).map((s) => ({
-              label: s.label === "INSTAGRAM" ? "IG" : s.label,
-              value: s.value,
-            }))}
-          />
+          <SocialRail items={global.socials} maxWidth={1000} />
         </div>
       )}
       {settings.showCornerNote && (
@@ -316,11 +311,9 @@ export function BrbVertical({ global, settings }: Props) {
             }}
           >
             <SocialRail
-              items={global.socials.slice(0, 2).map((s) => ({
-                label: s.label === "INSTAGRAM" ? "IG" : s.label,
-                value: s.value,
-              }))}
+              items={global.socials}
               fontSize={24}
+              maxWidth={1000}
             />
           </div>
         )}

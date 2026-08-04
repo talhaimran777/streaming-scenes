@@ -133,6 +133,7 @@ export const brbSchema = z.object({
 });
 
 export const justChattingSchema = z.object({
+  transparentBackground: z.boolean().default(false),
   showCameraFrame: z.boolean().default(true),
   showCameraLabel: z.boolean().default(true),
   cameraLabel: z.string().default("CAMERA"),

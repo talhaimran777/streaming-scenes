@@ -328,15 +328,10 @@ export function LiveHorizontal({
         >
           {settings.showSocials ? (
             <SocialRail
-              items={global.socials
-                .filter((s) => ["TWITCH", "TIKTOK", "INSTAGRAM"].includes(s.label) || s.label === "IG")
-                .slice(0, 3)
-                .map((s) => ({
-                  label: s.label === "INSTAGRAM" ? "IG" : s.label,
-                  value: s.value,
-                }))}
+              items={global.socials}
               gap={36}
               fontSize={22}
+              maxWidth={1200}
             />
           ) : (
             <div />
@@ -621,19 +616,10 @@ export function LiveVertical({
             >
               {settings.showSocials ? (
                 <SocialRail
-                  items={global.socials
-                    .filter(
-                      (s) =>
-                        ["TWITCH", "TIKTOK", "INSTAGRAM"].includes(s.label) ||
-                        s.label === "IG",
-                    )
-                    .slice(0, 3)
-                    .map((s) => ({
-                      label: s.label === "INSTAGRAM" ? "IG" : s.label,
-                      value: s.value,
-                    }))}
+                  items={global.socials}
                   gap={24}
                   fontSize={22}
+                  maxWidth={700}
                 />
               ) : (
                 <div />

@@ -30,24 +30,34 @@ export function JustChattingHorizontal({
   const messages = chat.slice(-settings.maxMessages);
 
   return (
-    <div style={{ position: "absolute", inset: 0, background: "#07070a" }}>
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(900px 700px at 18% 20%,rgba(139,92,246,.16),transparent 72%),radial-gradient(800px 700px at 92% 88%,rgba(232,25,44,.20),transparent 72%)",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px)",
-          backgroundSize: "80px 80px",
-        }}
-      />
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        background: settings.transparentBackground ? "transparent" : "#07070a",
+      }}
+    >
+      {!settings.transparentBackground && (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "radial-gradient(900px 700px at 18% 20%,rgba(139,92,246,.16),transparent 72%),radial-gradient(800px 700px at 92% 88%,rgba(232,25,44,.20),transparent 72%)",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px)",
+              backgroundSize: "80px 80px",
+            }}
+          />
+        </>
+      )}
 
       {settings.showCameraFrame && (
         <div
@@ -62,6 +72,7 @@ export function JustChattingHorizontal({
           <CornerFrame
             label={settings.cameraLabel}
             showLabel={settings.showCameraLabel}
+            fill={!settings.transparentBackground}
             size={56}
             thick={6}
           />
@@ -221,6 +232,27 @@ export function JustChattingHorizontal({
           </div>
         </div>
       )}
+
+      {settings.showSocials && (
+        <div
+          style={{
+            position: "absolute",
+            right: 56,
+            bottom: 56,
+            width: 600,
+            height: 78,
+            border: "1px solid rgba(255,255,255,.12)",
+            background: "rgba(12,12,16,.88)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "0 20px",
+            boxSizing: "border-box",
+          }}
+        >
+          <SocialRail items={global.socials} gap={24} fontSize={20} maxWidth={560} />
+        </div>
+      )}
     </div>
   );
 }
@@ -236,24 +268,34 @@ export function JustChattingVertical({
   const safe = global.verticalSafeAreaPx;
 
   return (
-    <div style={{ position: "absolute", inset: 0, background: "#07070a" }}>
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(700px 700px at 20% 16%,rgba(139,92,246,.16),transparent 72%),radial-gradient(700px 700px at 88% 90%,rgba(232,25,44,.20),transparent 72%)",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px)",
-          backgroundSize: "80px 80px",
-        }}
-      />
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        background: settings.transparentBackground ? "transparent" : "#07070a",
+      }}
+    >
+      {!settings.transparentBackground && (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "radial-gradient(700px 700px at 20% 16%,rgba(139,92,246,.16),transparent 72%),radial-gradient(700px 700px at 88% 90%,rgba(232,25,44,.20),transparent 72%)",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px)",
+              backgroundSize: "80px 80px",
+            }}
+          />
+        </>
+      )}
 
       <div
         style={{
@@ -296,6 +338,7 @@ export function JustChattingVertical({
             <CornerFrame
               label={settings.cameraLabel}
               showLabel={settings.showCameraLabel}
+              fill={!settings.transparentBackground}
               size={48}
               thick={6}
             />
@@ -388,11 +431,10 @@ export function JustChattingVertical({
             }}
           >
             <SocialRail
-              items={global.socials
-                .filter((s) => ["TWITCH", "TIKTOK"].includes(s.label))
-                .slice(0, 2)}
+              items={global.socials}
               gap={28}
               fontSize={24}
+              maxWidth={1000}
             />
           </div>
         )}

@@ -458,25 +458,41 @@ export function SocialRail({
   items,
   gap = 30,
   fontSize = 22,
+  maxWidth,
 }: {
   items: Array<{ label: string; value: string }>;
   gap?: number;
   fontSize?: number;
+  maxWidth?: number;
 }) {
+  const est =
+    items.reduce(
+      (sum, s) => sum + (s.label.length + s.value.length) * fontSize * 0.78 + 12,
+      0,
+    ) + gap * Math.max(0, items.length - 1);
+  const scale =
+    maxWidth && est > maxWidth ? Math.max(maxWidth / est, 0.62) : 1;
+  const sizedFont = Math.round(fontSize * scale);
+  const sizedGap = Math.round(gap * scale);
+  const innerGap = Math.max(6, Math.round(12 * scale));
+
   return (
     <div
       style={{
         display: "flex",
-        gap,
+        gap: sizedGap,
         fontFamily: "var(--font-jetbrains), monospace",
-        fontSize,
+        fontSize: sizedFont,
         letterSpacing: "0.18em",
         color: "#B4B4BC",
         alignItems: "center",
       }}
     >
       {items.map((s) => (
-        <span key={`${s.label}-${s.value}`} style={{ display: "inline-flex", gap: 12 }}>
+        <span
+          key={`${s.label}-${s.value}`}
+          style={{ display: "inline-flex", gap: innerGap }}
+        >
           <span style={{ color: "#E8192C" }}>{s.label}</span>
           <span>{s.value}</span>
         </span>
