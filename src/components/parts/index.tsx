@@ -4,11 +4,12 @@ import type { CSSProperties } from "react";
 export function verticalSafeAreaStyle(
   topSafePx: number,
   bottomSafePx: number,
+  sidePaddingPx = 0,
 ): CSSProperties {
   return {
     position: "absolute",
-    left: 0,
-    right: 0,
+    left: sidePaddingPx,
+    right: sidePaddingPx,
     top: topSafePx,
     height: `calc(100% - ${bottomSafePx}px)`,
   };

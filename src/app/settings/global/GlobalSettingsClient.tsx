@@ -41,6 +41,7 @@ export default function GlobalSettingsPage() {
   const [subsInterval, setSubsInterval] = useState("");
   const [safeArea, setSafeArea] = useState("");
   const [topSafeArea, setTopSafeArea] = useState("");
+  const [sidePadding, setSidePadding] = useState("");
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -57,6 +58,7 @@ export default function GlobalSettingsPage() {
     setSubsInterval(String(global.subscribersPollIntervalMs));
     setSafeArea(String(global.verticalSafeAreaPx));
     setTopSafeArea(String(global.verticalTopSafeAreaPx));
+    setSidePadding(String(global.verticalSidePaddingPx));
   }, [ready, dirty, data.settings.global]);
 
   const update = <K extends keyof GlobalSettings>(
@@ -119,6 +121,11 @@ export default function GlobalSettingsPage() {
       setError(topArea.error);
       return;
     }
+    const side = parseInterval(sidePadding, "Vertical side padding", 0, 300);
+    if (!side.ok) {
+      setError(side.error);
+      return;
+    }
 
     const next: GlobalSettings = {
       ...draft,
@@ -127,6 +134,7 @@ export default function GlobalSettingsPage() {
       subscribersPollIntervalMs: subs.value,
       verticalSafeAreaPx: area.value,
       verticalTopSafeAreaPx: topArea.value,
+      verticalSidePaddingPx: side.value,
     };
 
     setSaving(true);
@@ -139,6 +147,7 @@ export default function GlobalSettingsPage() {
       setSubsInterval(String(next.subscribersPollIntervalMs));
       setSafeArea(String(next.verticalSafeAreaPx));
       setTopSafeArea(String(next.verticalTopSafeAreaPx));
+      setSidePadding(String(next.verticalSidePaddingPx));
       setDirty(false);
       setSaved(true);
     } catch (err) {
@@ -345,6 +354,15 @@ export default function GlobalSettingsPage() {
                 <TextInput
                   value={topSafeArea}
                   onChange={(v) => onIntervalChange(setTopSafeArea, v)}
+                />
+              </Field>
+              <Field
+                label="Side padding (px)"
+                hint="Left and right inset applied to all 1080×1920 scenes. 0 = content spans the full width."
+              >
+                <TextInput
+                  value={sidePadding}
+                  onChange={(v) => onIntervalChange(setSidePadding, v)}
                 />
               </Field>
             </Section>

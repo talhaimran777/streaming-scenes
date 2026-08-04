@@ -284,6 +284,7 @@ export function LiveHorizontal({
           <CornerFrame
             label={settings.facecamLabel}
             showLabel={settings.showFacecamLabel}
+            fill={!settings.transparentBackground}
             size={44}
             thick={5}
           />
@@ -371,6 +372,7 @@ export function LiveVertical({
   );
   const safe = global.verticalSafeAreaPx;
   const topSafe = global.verticalTopSafeAreaPx;
+  const sidePad = global.verticalSidePaddingPx;
 
   return (
     <div
@@ -391,7 +393,7 @@ export function LiveVertical({
         />
       )}
 
-      <div style={verticalSafeAreaStyle(topSafe, safe)}>
+      <div style={verticalSafeAreaStyle(topSafe, safe, sidePad)}>
         {settings.showTopBar && (
           <div
             style={{
@@ -495,7 +497,10 @@ export function LiveVertical({
               <CornerFrame
                 label={settings.gameCaptureLabel}
                 showLabel={settings.showGameCaptureGuide}
-                fill={settings.showGameCaptureGuide}
+                fill={
+                  settings.showGameCaptureGuide &&
+                  !settings.transparentBackground
+                }
                 size={52}
                 thick={6}
               />
@@ -541,6 +546,7 @@ export function LiveVertical({
               <CornerFrame
                 label={settings.facecamLabel}
                 showLabel={settings.showFacecamLabel}
+                fill={!settings.transparentBackground}
                 size={52}
                 thick={6}
               />

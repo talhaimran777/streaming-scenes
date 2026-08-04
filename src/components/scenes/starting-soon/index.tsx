@@ -136,6 +136,7 @@ export function StartingSoonVertical({ global, settings }: Props) {
   );
   const safe = global.verticalSafeAreaPx;
   const topSafe = global.verticalTopSafeAreaPx;
+  const sidePad = global.verticalSidePaddingPx;
 
   return (
     <div style={{ position: "absolute", inset: 0, background: "#07070a" }}>
@@ -143,7 +144,7 @@ export function StartingSoonVertical({ global, settings }: Props) {
       <GridOverlay show={settings.showGrid} size={90} />
       <ScanlineOverlay show={settings.showScanlines} />
 
-      <div style={verticalSafeAreaStyle(topSafe, safe)}>
+      <div style={verticalSafeAreaStyle(topSafe, safe, sidePad)}>
         <div
           style={{
             position: "absolute",

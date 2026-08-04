@@ -226,6 +226,7 @@ export function EndingHorizontal({ global, settings }: Props) {
 export function EndingVertical({ global, settings }: Props) {
   const safe = global.verticalSafeAreaPx;
   const topSafe = global.verticalTopSafeAreaPx;
+  const sidePad = global.verticalSidePaddingPx;
 
   return (
     <div style={{ position: "absolute", inset: 0, background: "#07070a" }}>
@@ -248,7 +249,7 @@ export function EndingVertical({ global, settings }: Props) {
       />
       <ScanlineOverlay show={settings.showScanlines} />
 
-      <div style={verticalSafeAreaStyle(topSafe, safe)}>
+      <div style={verticalSafeAreaStyle(topSafe, safe, sidePad)}>
         <div
           style={{
             position: "absolute",
