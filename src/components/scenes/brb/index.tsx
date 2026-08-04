@@ -163,6 +163,7 @@ export function BrbHorizontal({ global, settings }: Props) {
 
 export function BrbVertical({ global, settings }: Props) {
   const safe = global.verticalSafeAreaPx;
+  const topSafe = global.verticalTopSafeAreaPx;
 
   return (
     <div style={{ position: "absolute", inset: 0, background: "#07070a" }}>
@@ -193,7 +194,7 @@ export function BrbVertical({ global, settings }: Props) {
           position: "absolute",
           left: 0,
           right: 0,
-          top: 0,
+          top: topSafe,
           bottom: safe,
         }}
       >

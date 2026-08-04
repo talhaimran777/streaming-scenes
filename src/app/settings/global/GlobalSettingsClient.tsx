@@ -40,6 +40,7 @@ export default function GlobalSettingsPage() {
   const [viewersInterval, setViewersInterval] = useState("");
   const [subsInterval, setSubsInterval] = useState("");
   const [safeArea, setSafeArea] = useState("");
+  const [topSafeArea, setTopSafeArea] = useState("");
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -55,6 +56,7 @@ export default function GlobalSettingsPage() {
     setViewersInterval(String(global.viewersPollIntervalMs));
     setSubsInterval(String(global.subscribersPollIntervalMs));
     setSafeArea(String(global.verticalSafeAreaPx));
+    setTopSafeArea(String(global.verticalTopSafeAreaPx));
   }, [ready, dirty, data.settings.global]);
 
   const update = <K extends keyof GlobalSettings>(
@@ -112,6 +114,11 @@ export default function GlobalSettingsPage() {
       setError(area.error);
       return;
     }
+    const topArea = parseInterval(topSafeArea, "Mobile top safe area", 0, 600);
+    if (!topArea.ok) {
+      setError(topArea.error);
+      return;
+    }
 
     const next: GlobalSettings = {
       ...draft,
@@ -119,6 +126,7 @@ export default function GlobalSettingsPage() {
       viewersPollIntervalMs: viewers.value,
       subscribersPollIntervalMs: subs.value,
       verticalSafeAreaPx: area.value,
+      verticalTopSafeAreaPx: topArea.value,
     };
 
     setSaving(true);
@@ -130,6 +138,7 @@ export default function GlobalSettingsPage() {
       setViewersInterval(String(next.viewersPollIntervalMs));
       setSubsInterval(String(next.subscribersPollIntervalMs));
       setSafeArea(String(next.verticalSafeAreaPx));
+      setTopSafeArea(String(next.verticalTopSafeAreaPx));
       setDirty(false);
       setSaved(true);
     } catch (err) {
@@ -327,6 +336,15 @@ export default function GlobalSettingsPage() {
                 <TextInput
                   value={safeArea}
                   onChange={(v) => onIntervalChange(setSafeArea, v)}
+                />
+              </Field>
+              <Field
+                label="Mobile top safe area (px)"
+                hint="Top strip kept clear on 1080×1920 scenes for the YouTube mobile header. 0 = layout starts at the top."
+              >
+                <TextInput
+                  value={topSafeArea}
+                  onChange={(v) => onIntervalChange(setTopSafeArea, v)}
                 />
               </Field>
             </Section>

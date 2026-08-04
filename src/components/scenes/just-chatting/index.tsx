@@ -266,6 +266,7 @@ export function JustChattingVertical({
 }: Props) {
   const messages = chat.slice(-Math.min(settings.maxMessages, 3));
   const safe = global.verticalSafeAreaPx;
+  const topSafe = global.verticalTopSafeAreaPx;
 
   return (
     <div
@@ -302,7 +303,7 @@ export function JustChattingVertical({
           position: "absolute",
           left: 0,
           right: 0,
-          top: 0,
+          top: topSafe,
           bottom: safe,
         }}
       >

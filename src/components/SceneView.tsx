@@ -76,6 +76,7 @@ export function SceneView({
           global={settings.global}
           settings={settings.scenes.live}
           uptimeSeconds={live.uptimeSeconds}
+          uptimeStartedAt={live.uptimeStartedAt}
           streamTitle={live.streamTitle}
         />
       ) : (
@@ -83,6 +84,7 @@ export function SceneView({
           global={settings.global}
           settings={settings.scenes.live}
           uptimeSeconds={live.uptimeSeconds}
+          uptimeStartedAt={live.uptimeStartedAt}
           streamTitle={live.streamTitle}
         />
       )

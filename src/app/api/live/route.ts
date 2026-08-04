@@ -36,7 +36,7 @@ export async function GET(_req: NextRequest) {
         }
       };
 
-      const live = addLiveClient();
+      const live = await addLiveClient();
       const [settings, quota, youtube] = await Promise.all([
         readSettings(),
         getQuota(),

@@ -37,6 +37,7 @@ yarn-error.log*
 /data/settings.json
 /data/youtube-token.json
 /data/quota.json
+/data/live-session.json
 
 # vercel
 .vercel

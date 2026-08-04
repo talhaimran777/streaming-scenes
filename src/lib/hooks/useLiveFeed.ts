@@ -149,6 +149,20 @@ export function formatUptime(seconds: number | null | undefined): string {
   return [h, m, s].map((n) => String(n).padStart(2, "0")).join(":");
 }
 
+export function useUptimeSeconds(
+  startedAt: string | null,
+  fallback: number | null,
+): number | null {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!startedAt) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [startedAt]);
+  if (!startedAt) return fallback;
+  return Math.max(0, Math.floor((now - new Date(startedAt).getTime()) / 1000));
+}
+
 export function formatCountdown(targetIso: string | null, fallback: string): string {
   if (!targetIso) return fallback;
   const diff = Math.max(0, Math.floor((new Date(targetIso).getTime() - Date.now()) / 1000));

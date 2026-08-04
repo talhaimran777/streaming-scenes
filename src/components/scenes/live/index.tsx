@@ -2,7 +2,7 @@
 
 import type { GlobalSettings, LiveSettings } from "@/lib/settings/schema";
 import { resolveStreamTitle } from "@/lib/settings/schema";
-import { formatUptime } from "@/lib/hooks/useLiveFeed";
+import { formatUptime, useUptimeSeconds } from "@/lib/hooks/useLiveFeed";
 import {
   AudioBars,
   CornerFrame,
@@ -15,6 +15,7 @@ type Props = {
   global: GlobalSettings;
   settings: LiveSettings;
   uptimeSeconds: number | null;
+  uptimeStartedAt?: string | null;
   streamTitle?: string | null;
 };
 
@@ -22,11 +23,14 @@ export function LiveHorizontal({
   global,
   settings,
   uptimeSeconds,
+  uptimeStartedAt = null,
   streamTitle,
 }: Props) {
   const title =
     settings.overrideTitle ?? streamTitle ?? resolveStreamTitle(global);
-  const uptime = formatUptime(uptimeSeconds);
+  const uptime = formatUptime(
+    useUptimeSeconds(uptimeStartedAt, uptimeSeconds),
+  );
 
   return (
     <div
@@ -356,12 +360,16 @@ export function LiveVertical({
   global,
   settings,
   uptimeSeconds,
+  uptimeStartedAt = null,
   streamTitle,
 }: Props) {
   const title =
     settings.overrideTitle ?? streamTitle ?? resolveStreamTitle(global);
-  const uptime = formatUptime(uptimeSeconds);
+  const uptime = formatUptime(
+    useUptimeSeconds(uptimeStartedAt, uptimeSeconds),
+  );
   const safe = global.verticalSafeAreaPx;
+  const topSafe = global.verticalTopSafeAreaPx;
 
   return (
     <div
@@ -387,7 +395,7 @@ export function LiveVertical({
           position: "absolute",
           left: 0,
           right: 0,
-          top: 0,
+          top: topSafe,
           bottom: safe,
         }}
       >

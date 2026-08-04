@@ -27,6 +27,7 @@ export const globalSettingsSchema = z.object({
   subscribersPollIntervalMs: z.number().int().min(15000).max(300000).default(60000),
   broadcastDiscoveryIntervalMs: z.number().int().min(15000).max(300000).default(30000),
   verticalSafeAreaPx: z.number().int().min(0).max(700).default(312),
+  verticalTopSafeAreaPx: z.number().int().min(0).max(600).default(0),
 });
 
 export const startingSoonSchema = z.object({
