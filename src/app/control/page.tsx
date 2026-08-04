@@ -80,6 +80,11 @@ export default function ControlPage() {
     }
   };
 
+  const uptimeSeconds = useUptimeSeconds(
+    data.live.uptimeStartedAt,
+    data.live.uptimeSeconds,
+  );
+
   if (!ready) {
     return (
       <div className="admin-shell">
@@ -91,10 +96,6 @@ export default function ControlPage() {
 
   const { live, quota, youtube, settings } = data;
   const sessionActive = live.sessionActive;
-  const uptimeSeconds = useUptimeSeconds(
-    live.uptimeStartedAt,
-    live.uptimeSeconds,
-  );
 
   return (
     <div className="admin-shell">
