@@ -107,7 +107,9 @@ export const liveSchema = z.object({
   showSocials: z.boolean().default(true),
   commandsText: z.string().default("!drops · !crosshair · !rank"),
   commandsTextVertical: z.string().default("!rank"),
+  showGameCapture: z.boolean().default(true),
   showGameCaptureGuide: z.boolean().default(true),
+  gameCaptureLabel: z.string().default("GAME CAPTURE"),
   gameCaptureWidthVertical: z.number().default(1008),
   gameCaptureHeightVertical: z.number().default(702),
 });

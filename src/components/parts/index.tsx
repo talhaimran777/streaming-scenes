@@ -229,12 +229,14 @@ export function CornerFrame({
   size = 44,
   thick = 5,
   showLabel = true,
+  fill = true,
 }: {
   children?: React.ReactNode;
   label?: string;
   size?: number;
   thick?: number;
   showLabel?: boolean;
+  fill?: boolean;
 }) {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
@@ -243,7 +245,7 @@ export function CornerFrame({
           position: "absolute",
           inset: 0,
           border: "1px solid rgba(255,255,255,0.14)",
-          background: "rgba(12,12,16,0.55)",
+          background: fill ? "rgba(12,12,16,0.55)" : "transparent",
         }}
       />
       {showLabel && label && (

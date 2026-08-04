@@ -347,7 +347,8 @@ function renderFields(
           <Toggle label="Audio bars" checked={!!d.showAudioBars} onChange={(v) => u("showAudioBars", v)} />
           <Toggle label="Bottom bar" checked={!!d.showBottomBar} onChange={(v) => u("showBottomBar", v)} />
           <Toggle label="Socials" checked={!!d.showSocials} onChange={(v) => u("showSocials", v)} />
-          <Toggle label="Game capture guide" checked={!!d.showGameCaptureGuide} onChange={(v) => u("showGameCaptureGuide", v)} />
+          <Toggle label="Game capture frame (vertical)" checked={!!d.showGameCapture} onChange={(v) => u("showGameCapture", v)} />
+          <Toggle label="Game capture guide (label)" checked={!!d.showGameCaptureGuide} onChange={(v) => u("showGameCaptureGuide", v)} />
         </Section>
         <Section title="Stats rail (default off)">
           <Toggle label="Show stats rail" checked={!!d.showStatsRail} onChange={(v) => u("showStatsRail", v)} />
@@ -375,6 +376,7 @@ function renderFields(
           <Field label="Deaths label"><TextInput value={String(d.deathsLabel)} onChange={(v) => u("deathsLabel", v)} /></Field>
           <Field label="W/L label"><TextInput value={String(d.wlLabel)} onChange={(v) => u("wlLabel", v)} /></Field>
           <Field label="Facecam label"><TextInput value={String(d.facecamLabel)} onChange={(v) => u("facecamLabel", v)} /></Field>
+          <Field label="Game capture label"><TextInput value={String(d.gameCaptureLabel)} onChange={(v) => u("gameCaptureLabel", v)} /></Field>
         </Section>
         <Section title="Facecam size (horizontal)">
           <Field label="Width (px)">

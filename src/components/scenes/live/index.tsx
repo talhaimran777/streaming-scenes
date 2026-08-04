@@ -474,220 +474,176 @@ export function LiveVertical({
           </div>
         )}
 
-        {settings.showFacecam && (
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              marginLeft: -settings.facecamWidthVertical / 2,
-              top: 172,
-              width: settings.facecamWidthVertical,
-              height: settings.facecamHeightVertical,
-            }}
-          >
-            <CornerFrame
-              label={settings.facecamLabel}
-              showLabel={settings.showFacecamLabel}
-              size={52}
-              thick={6}
-            />
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: 172,
+            padding: "0 36px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 40,
+          }}
+        >
+          {settings.showGameCapture && (
             <div
               style={{
-                position: "absolute",
-                left: 0,
-                bottom: 0,
-                display: "flex",
-                alignItems: "center",
-                gap: 14,
-                height: 52,
-                padding: "0 22px",
-                background: "#E8192C",
-                zIndex: 2,
+                position: "relative",
+                width: settings.gameCaptureWidthVertical,
+                height: settings.gameCaptureHeightVertical,
+                flexShrink: 0,
               }}
             >
-              <div
-                style={{
-                  fontFamily: "var(--font-jetbrains), monospace",
-                  fontSize: 20,
-                  fontWeight: 700,
-                  letterSpacing: "0.24em",
-                }}
-              >
-                {global.brand}
-              </div>
-              {settings.showAudioBars && <AudioBars />}
+              <CornerFrame
+                label={settings.gameCaptureLabel}
+                showLabel={settings.showGameCaptureGuide}
+                fill={settings.showGameCaptureGuide}
+                size={52}
+                thick={6}
+              />
+              {settings.showTitle && (
+                <div
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    height: 48,
+                    padding: "0 22px",
+                    background: "rgba(7,7,10,.92)",
+                    borderRight: "3px solid #E8192C",
+                    display: "flex",
+                    alignItems: "center",
+                    zIndex: 2,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "var(--font-jetbrains), monospace",
+                      fontSize: 20,
+                      letterSpacing: "0.2em",
+                      color: "#DDDDE2",
+                    }}
+                  >
+                    {title}
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          )}
 
-        {settings.showGameCaptureGuide && (
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              marginLeft: -settings.gameCaptureWidthVertical / 2,
-              top: settings.showFacecam
-                ? 172 + settings.facecamHeightVertical + 40
-                : 172,
-              width: settings.gameCaptureWidthVertical,
-              height: settings.gameCaptureHeightVertical,
-            }}
-          >
+          {settings.showFacecam && (
             <div
               style={{
-                position: "absolute",
-                inset: 0,
-                border: "2px dashed rgba(255,255,255,.16)",
-                background: "rgba(12,12,16,.35)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "column",
-                gap: 10,
-                pointerEvents: "none",
+                position: "relative",
+                width: settings.facecamWidthVertical,
+                height: settings.facecamHeightVertical,
+                flexShrink: 0,
               }}
             >
-              <div
-                style={{
-                  fontFamily: "var(--font-jetbrains), monospace",
-                  fontSize: 26,
-                  letterSpacing: "0.3em",
-                  color: "#4E4E58",
-                }}
-              >
-                GAME CAPTURE
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-jetbrains), monospace",
-                  fontSize: 18,
-                  letterSpacing: "0.18em",
-                  color: "#3A3A42",
-                }}
-              >
-                {settings.gameCaptureWidthVertical} ×{" "}
-                {settings.gameCaptureHeightVertical}
-              </div>
-            </div>
-            <div
-              style={{
-                position: "absolute",
-                left: -3,
-                top: -3,
-                width: 52,
-                height: 52,
-                borderLeft: "6px solid #8B5CF6",
-                borderTop: "6px solid #8B5CF6",
-              }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                right: -3,
-                bottom: -3,
-                width: 52,
-                height: 52,
-                borderRight: "6px solid #E8192C",
-                borderBottom: "6px solid #E8192C",
-              }}
-            />
-            {settings.showTitle && (
+              <CornerFrame
+                label={settings.facecamLabel}
+                showLabel={settings.showFacecamLabel}
+                size={52}
+                thick={6}
+              />
               <div
                 style={{
                   position: "absolute",
                   left: 0,
-                  top: 0,
-                  height: 48,
-                  padding: "0 22px",
-                  background: "rgba(7,7,10,.92)",
-                  borderRight: "3px solid #E8192C",
+                  bottom: 0,
                   display: "flex",
                   alignItems: "center",
+                  gap: 14,
+                  height: 52,
+                  padding: "0 22px",
+                  background: "#E8192C",
+                  zIndex: 2,
                 }}
               >
                 <div
                   style={{
                     fontFamily: "var(--font-jetbrains), monospace",
                     fontSize: 20,
-                    letterSpacing: "0.2em",
-                    color: "#DDDDE2",
+                    fontWeight: 700,
+                    letterSpacing: "0.24em",
                   }}
                 >
-                  {title}
+                  {global.brand}
                 </div>
+                {settings.showAudioBars && <AudioBars />}
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
 
-        {settings.showStatsRail && (
-          <div
-            style={{
-              position: "absolute",
-              left: 36,
-              right: 36,
-              bottom: 96,
-              display: "grid",
-              gridTemplateColumns: "1.4fr 1fr 1fr",
-              gap: 16,
-            }}
-          >
-            {settings.showRating && (
-              <StatCard
-                label={settings.ratingLabelVertical}
-                value={settings.rating}
-                accentBar
-                compact
-              />
-            )}
-            {settings.showKd && (
-              <StatCard label={settings.kdLabel} value={settings.kd} compact />
-            )}
-            {settings.showHs && (
-              <StatCard label={settings.hsLabel} value={settings.hs} compact />
-            )}
-          </div>
-        )}
+          {settings.showStatsRail && (
+            <div
+              style={{
+                alignSelf: "stretch",
+                display: "grid",
+                gridTemplateColumns: "1.4fr 1fr 1fr",
+                gap: 16,
+                flexShrink: 0,
+              }}
+            >
+              {settings.showRating && (
+                <StatCard
+                  label={settings.ratingLabelVertical}
+                  value={settings.rating}
+                  accentBar
+                  compact
+                />
+              )}
+              {settings.showKd && (
+                <StatCard label={settings.kdLabel} value={settings.kd} compact />
+              )}
+              {settings.showHs && (
+                <StatCard label={settings.hsLabel} value={settings.hs} compact />
+              )}
+            </div>
+          )}
 
-        {settings.showBottomBar && (
-          <div
-            style={{
-              position: "absolute",
-              left: 36,
-              right: 36,
-              bottom: 18,
-              height: 66,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              fontFamily: "var(--font-jetbrains), monospace",
-              fontSize: 22,
-              letterSpacing: "0.14em",
-              color: "#B4B4BC",
-            }}
-          >
-            {settings.showSocials ? (
-              <SocialRail
-                items={global.socials
-                  .filter(
-                    (s) =>
-                      ["TWITCH", "TIKTOK", "INSTAGRAM"].includes(s.label) ||
-                      s.label === "IG",
-                  )
-                  .slice(0, 3)
-                  .map((s) => ({
-                    label: s.label === "INSTAGRAM" ? "IG" : s.label,
-                    value: s.value,
-                  }))}
-                gap={24}
-                fontSize={22}
-              />
-            ) : (
-              <div />
-            )}
-            <div style={{ color: "#8A8A93" }}>{settings.commandsTextVertical}</div>
-          </div>
-        )}
+          {settings.showBottomBar && (
+            <div
+              style={{
+                alignSelf: "stretch",
+                height: 66,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                fontFamily: "var(--font-jetbrains), monospace",
+                fontSize: 22,
+                letterSpacing: "0.14em",
+                color: "#B4B4BC",
+                flexShrink: 0,
+              }}
+            >
+              {settings.showSocials ? (
+                <SocialRail
+                  items={global.socials
+                    .filter(
+                      (s) =>
+                        ["TWITCH", "TIKTOK", "INSTAGRAM"].includes(s.label) ||
+                        s.label === "IG",
+                    )
+                    .slice(0, 3)
+                    .map((s) => ({
+                      label: s.label === "INSTAGRAM" ? "IG" : s.label,
+                      value: s.value,
+                    }))}
+                  gap={24}
+                  fontSize={22}
+                />
+              ) : (
+                <div />
+              )}
+              <div style={{ color: "#8A8A93" }}>
+                {settings.commandsTextVertical}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
