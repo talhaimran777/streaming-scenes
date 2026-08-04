@@ -478,10 +478,11 @@ export function LiveVertical({
           <div
             style={{
               position: "absolute",
-              left: 36,
-              right: 36,
+              left: "50%",
+              marginLeft: -settings.facecamWidthVertical / 2,
               top: 172,
-              height: 576,
+              width: settings.facecamWidthVertical,
+              height: settings.facecamHeightVertical,
             }}
           >
             <CornerFrame
@@ -523,10 +524,13 @@ export function LiveVertical({
           <div
             style={{
               position: "absolute",
-              left: 36,
-              right: 36,
-              top: 788,
-              bottom: 118,
+              left: "50%",
+              marginLeft: -settings.gameCaptureWidthVertical / 2,
+              top: settings.showFacecam
+                ? 172 + settings.facecamHeightVertical + 40
+                : 172,
+              width: settings.gameCaptureWidthVertical,
+              height: settings.gameCaptureHeightVertical,
             }}
           >
             <div
@@ -561,7 +565,8 @@ export function LiveVertical({
                   color: "#3A3A42",
                 }}
               >
-                FULL 16:9 — NOTHING CROPPED
+                {settings.gameCaptureWidthVertical} ×{" "}
+                {settings.gameCaptureHeightVertical}
               </div>
             </div>
             <div

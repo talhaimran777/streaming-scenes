@@ -376,7 +376,7 @@ function renderFields(
           <Field label="W/L label"><TextInput value={String(d.wlLabel)} onChange={(v) => u("wlLabel", v)} /></Field>
           <Field label="Facecam label"><TextInput value={String(d.facecamLabel)} onChange={(v) => u("facecamLabel", v)} /></Field>
         </Section>
-        <Section title="Facecam size">
+        <Section title="Facecam size (horizontal)">
           <Field label="Width (px)">
             <TextInput
               value={String(d.facecamWidth)}
@@ -387,6 +387,34 @@ function renderFields(
             <TextInput
               value={String(d.facecamHeight)}
               onChange={(v) => u("facecamHeight", Number(v) || 293)}
+            />
+          </Field>
+        </Section>
+        <Section title="Facecam size (vertical)">
+          <Field label="Width (px)" hint="Default 1008 (full width with 36px side margins)">
+            <TextInput
+              value={String(d.facecamWidthVertical)}
+              onChange={(v) => u("facecamWidthVertical", Number(v) || 1008)}
+            />
+          </Field>
+          <Field label="Height (px)" hint="Default 576">
+            <TextInput
+              value={String(d.facecamHeightVertical)}
+              onChange={(v) => u("facecamHeightVertical", Number(v) || 576)}
+            />
+          </Field>
+        </Section>
+        <Section title="Game capture size (vertical)">
+          <Field label="Width (px)" hint="Default 1008">
+            <TextInput
+              value={String(d.gameCaptureWidthVertical)}
+              onChange={(v) => u("gameCaptureWidthVertical", Number(v) || 1008)}
+            />
+          </Field>
+          <Field label="Height (px)" hint="Default 702">
+            <TextInput
+              value={String(d.gameCaptureHeightVertical)}
+              onChange={(v) => u("gameCaptureHeightVertical", Number(v) || 702)}
             />
           </Field>
         </Section>

@@ -98,6 +98,8 @@ export const liveSchema = z.object({
   showFacecam: z.boolean().default(true),
   facecamWidth: z.number().default(520),
   facecamHeight: z.number().default(293),
+  facecamWidthVertical: z.number().default(1008),
+  facecamHeightVertical: z.number().default(576),
   showFacecamLabel: z.boolean().default(true),
   facecamLabel: z.string().default("FACECAM"),
   showAudioBars: z.boolean().default(true),
@@ -106,6 +108,8 @@ export const liveSchema = z.object({
   commandsText: z.string().default("!drops · !crosshair · !rank"),
   commandsTextVertical: z.string().default("!rank"),
   showGameCaptureGuide: z.boolean().default(true),
+  gameCaptureWidthVertical: z.number().default(1008),
+  gameCaptureHeightVertical: z.number().default(702),
 });
 
 export const brbSchema = z.object({
