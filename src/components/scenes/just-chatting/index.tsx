@@ -10,6 +10,7 @@ import {
   CornerFrame,
   LiveBadge,
   SocialRail,
+  verticalSafeAreaStyle,
 } from "@/components/parts";
 
 type Props = {
@@ -298,15 +299,7 @@ export function JustChattingVertical({
         </>
       )}
 
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: topSafe,
-          bottom: safe,
-        }}
-      >
+      <div style={verticalSafeAreaStyle(topSafe, safe)}>
         <div
           style={{
             position: "absolute",

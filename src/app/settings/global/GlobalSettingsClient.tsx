@@ -340,7 +340,7 @@ export default function GlobalSettingsPage() {
               </Field>
               <Field
                 label="Mobile top safe area (px)"
-                hint="Top strip kept clear on 1080×1920 scenes for the YouTube mobile header. 0 = layout starts at the top."
+                hint="Shifts all vertical-scene content down by this amount (1080×1920). Consumes part of the bottom chat safe strip. 0 = layout starts at the top."
               >
                 <TextInput
                   value={topSafeArea}

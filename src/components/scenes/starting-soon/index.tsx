@@ -11,6 +11,7 @@ import {
   GridOverlay,
   ScanlineOverlay,
   Ticker,
+  verticalSafeAreaStyle,
 } from "@/components/parts";
 
 type Props = {
@@ -142,15 +143,7 @@ export function StartingSoonVertical({ global, settings }: Props) {
       <GridOverlay show={settings.showGrid} size={90} />
       <ScanlineOverlay show={settings.showScanlines} />
 
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: topSafe,
-          bottom: safe,
-        }}
-      >
+      <div style={verticalSafeAreaStyle(topSafe, safe)}>
         <div
           style={{
             position: "absolute",

@@ -9,6 +9,7 @@ import {
   LiveBadge,
   SocialRail,
   StatCard,
+  verticalSafeAreaStyle,
 } from "@/components/parts";
 
 type Props = {
@@ -390,15 +391,7 @@ export function LiveVertical({
         />
       )}
 
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: topSafe,
-          bottom: safe,
-        }}
-      >
+      <div style={verticalSafeAreaStyle(topSafe, safe)}>
         {settings.showTopBar && (
           <div
             style={{

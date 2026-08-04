@@ -1,7 +1,11 @@
 "use client";
 
 import type { EndingSettings, GlobalSettings } from "@/lib/settings/schema";
-import { BrandMark, ScanlineOverlay } from "@/components/parts";
+import {
+  BrandMark,
+  ScanlineOverlay,
+  verticalSafeAreaStyle,
+} from "@/components/parts";
 
 type Props = {
   global: GlobalSettings;
@@ -244,15 +248,7 @@ export function EndingVertical({ global, settings }: Props) {
       />
       <ScanlineOverlay show={settings.showScanlines} />
 
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: topSafe,
-          bottom: safe,
-        }}
-      >
+      <div style={verticalSafeAreaStyle(topSafe, safe)}>
         <div
           style={{
             position: "absolute",

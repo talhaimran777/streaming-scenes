@@ -1,3 +1,19 @@
+import type { CSSProperties } from "react";
+
+/** Visible-area box for vertical (1080×1920) scenes: top offset shifts all content down. */
+export function verticalSafeAreaStyle(
+  topSafePx: number,
+  bottomSafePx: number,
+): CSSProperties {
+  return {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: topSafePx,
+    height: `calc(100% - ${bottomSafePx}px)`,
+  };
+}
+
 export function LiveBadge({
   text = "LIVE",
   size = "md",
