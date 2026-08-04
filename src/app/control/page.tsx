@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { Field, Section, TextInput, Toggle } from "@/components/admin/Form";
-import { useLiveFeed, formatUptime } from "@/lib/hooks/useLiveFeed";
+import { useLiveFeed, formatUptime, useUptimeSeconds } from "@/lib/hooks/useLiveFeed";
 import type { LiveData, QuotaState } from "@/lib/sse/bus";
 
 type SessionResponse = {
@@ -91,6 +91,10 @@ export default function ControlPage() {
 
   const { live, quota, youtube, settings } = data;
   const sessionActive = live.sessionActive;
+  const uptimeSeconds = useUptimeSeconds(
+    live.uptimeStartedAt,
+    live.uptimeSeconds,
+  );
 
   return (
     <div className="admin-shell">
@@ -126,7 +130,7 @@ export default function ControlPage() {
               ? `SESSION · ${live.viewers} viewers`
               : "idle"}
             {sessionActive
-              ? ` · uptime ${formatUptime(live.uptimeSeconds)}`
+              ? ` · uptime ${formatUptime(uptimeSeconds)}`
               : ""}
           </p>
         </div>
@@ -151,7 +155,7 @@ export default function ControlPage() {
             }}
           >
             {sessionActive
-              ? `LIVE${live.streamTitle ? ` · ${live.streamTitle}` : ""} · ${live.viewers} viewers · ${formatUptime(live.uptimeSeconds)}`
+              ? `LIVE${live.streamTitle ? ` · ${live.streamTitle}` : ""} · ${live.viewers} viewers · ${formatUptime(uptimeSeconds)}`
               : "IDLE · no YouTube polls"}
           </div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>

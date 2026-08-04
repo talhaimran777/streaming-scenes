@@ -153,14 +153,32 @@ export function useUptimeSeconds(
   startedAt: string | null,
   fallback: number | null,
 ): number | null {
+  const [anchor, setAnchor] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
+
   useEffect(() => {
-    if (!startedAt) return;
+    if (startedAt) {
+      const t = new Date(startedAt).getTime();
+      if (!Number.isNaN(t)) {
+        setAnchor(t);
+        return;
+      }
+    }
+    if (fallback != null && fallback >= 0) {
+      setAnchor((prev) => prev ?? Date.now() - fallback * 1000);
+      return;
+    }
+    setAnchor(null);
+  }, [startedAt, fallback]);
+
+  useEffect(() => {
+    if (anchor == null) return;
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
-  }, [startedAt]);
-  if (!startedAt) return fallback;
-  return Math.max(0, Math.floor((now - new Date(startedAt).getTime()) / 1000));
+  }, [anchor]);
+
+  if (anchor == null) return fallback;
+  return Math.max(0, Math.floor((now - anchor) / 1000));
 }
 
 export function formatCountdown(targetIso: string | null, fallback: string): string {

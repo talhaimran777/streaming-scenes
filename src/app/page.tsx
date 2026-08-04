@@ -4,11 +4,15 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { SCENE_IDS, SCENE_META } from "@/lib/scenes";
-import { useLiveFeed, formatUptime } from "@/lib/hooks/useLiveFeed";
+import { useLiveFeed, formatUptime, useUptimeSeconds } from "@/lib/hooks/useLiveFeed";
 
 export default function DashboardPage() {
   const { data, connected, ready } = useLiveFeed();
   const [copied, setCopied] = useState<string | null>(null);
+  const uptimeSeconds = useUptimeSeconds(
+    data.live.uptimeStartedAt,
+    data.live.uptimeSeconds,
+  );
 
   const origin = useMemo(() => {
     if (typeof window === "undefined") return "http://localhost:3000";
@@ -106,7 +110,7 @@ export default function DashboardPage() {
           />
           <Stat
             label="Uptime"
-            value={formatUptime(data.live.uptimeSeconds)}
+            value={formatUptime(uptimeSeconds)}
           />
           <Stat
             label="Quota"

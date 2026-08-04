@@ -276,7 +276,10 @@ async function discover(): Promise<boolean> {
     const broadcasts = await listActiveBroadcasts();
     s.live.broadcasts = broadcasts;
     s.live.isLive = broadcasts.length > 0;
-    s.live.uptimeStartedAt = pickStartTime(broadcasts);
+    s.live.uptimeStartedAt =
+      pickStartTime(broadcasts) ??
+      s.live.uptimeStartedAt ??
+      (broadcasts.length > 0 ? new Date().toISOString() : null);
     s.live.streamTitle = broadcasts[0]?.title ?? null;
     if (!s.live.isLive) {
       s.live.viewers = 0;
