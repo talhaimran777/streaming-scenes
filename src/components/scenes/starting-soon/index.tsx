@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { GlobalSettings, StartingSoonSettings } from "@/lib/settings/schema";
 import { resolveGameLabel } from "@/lib/settings/schema";
 import { formatCountdown } from "@/lib/hooks/useLiveFeed";
+import { resolveVerticalLayout } from "@/lib/layout/vertical";
 import {
   BrandMark,
   CountdownCard,
@@ -11,7 +12,6 @@ import {
   GridOverlay,
   ScanlineOverlay,
   Ticker,
-  verticalSafeAreaStyle,
 } from "@/components/parts";
 
 type Props = {
@@ -134,9 +134,7 @@ export function StartingSoonVertical({ global, settings }: Props) {
     settings.countdownTarget,
     settings.countdownFallback,
   );
-  const safe = global.verticalSafeAreaPx;
-  const topSafe = global.verticalTopSafeAreaPx;
-  const sidePad = global.verticalSidePaddingPx;
+  const layout = resolveVerticalLayout(global, settings);
 
   return (
     <div style={{ position: "absolute", inset: 0, background: "#07070a" }}>
@@ -144,7 +142,7 @@ export function StartingSoonVertical({ global, settings }: Props) {
       <GridOverlay show={settings.showGrid} size={90} />
       <ScanlineOverlay show={settings.showScanlines} />
 
-      <div style={verticalSafeAreaStyle(topSafe, safe, sidePad)}>
+      <div style={layout.boxStyle}>
         <div
           style={{
             position: "absolute",

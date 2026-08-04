@@ -1,10 +1,10 @@
 "use client";
 
 import type { EndingSettings, GlobalSettings } from "@/lib/settings/schema";
+import { resolveVerticalLayout } from "@/lib/layout/vertical";
 import {
   BrandMark,
   ScanlineOverlay,
-  verticalSafeAreaStyle,
 } from "@/components/parts";
 
 type Props = {
@@ -224,9 +224,7 @@ export function EndingHorizontal({ global, settings }: Props) {
 }
 
 export function EndingVertical({ global, settings }: Props) {
-  const safe = global.verticalSafeAreaPx;
-  const topSafe = global.verticalTopSafeAreaPx;
-  const sidePad = global.verticalSidePaddingPx;
+  const layout = resolveVerticalLayout(global, settings);
 
   return (
     <div style={{ position: "absolute", inset: 0, background: "#07070a" }}>
@@ -249,7 +247,7 @@ export function EndingVertical({ global, settings }: Props) {
       />
       <ScanlineOverlay show={settings.showScanlines} />
 
-      <div style={verticalSafeAreaStyle(topSafe, safe, sidePad)}>
+      <div style={layout.boxStyle}>
         <div
           style={{
             position: "absolute",

@@ -1,11 +1,11 @@
 "use client";
 
 import type { BrbSettings, GlobalSettings } from "@/lib/settings/schema";
+import { resolveVerticalLayout } from "@/lib/layout/vertical";
 import {
   BrandMark,
   ScanlineOverlay,
   SocialRail,
-  verticalSafeAreaStyle,
 } from "@/components/parts";
 
 type Props = {
@@ -167,9 +167,7 @@ export function BrbHorizontal({ global, settings }: Props) {
 }
 
 export function BrbVertical({ global, settings }: Props) {
-  const safe = global.verticalSafeAreaPx;
-  const topSafe = global.verticalTopSafeAreaPx;
-  const sidePad = global.verticalSidePaddingPx;
+  const layout = resolveVerticalLayout(global, settings);
 
   return (
     <div style={{ position: "absolute", inset: 0, background: "#07070a" }}>
@@ -195,7 +193,7 @@ export function BrbVertical({ global, settings }: Props) {
       />
       <ScanlineOverlay show={settings.showScanlines} />
 
-      <div style={verticalSafeAreaStyle(topSafe, safe, sidePad)}>
+      <div style={layout.boxStyle}>
         <div style={{ position: "absolute", left: 72, top: 110 }}>
           <BrandMark
             brand={global.brand}

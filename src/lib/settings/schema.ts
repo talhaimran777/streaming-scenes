@@ -5,6 +5,12 @@ const socialItemSchema = z.object({
   value: z.string(),
 });
 
+/** Extra top/side padding layered on top of global vertical safe-area settings. */
+const verticalPaddingFields = {
+  verticalExtraTopPx: z.number().int().min(0).max(600).default(0),
+  verticalExtraSidePx: z.number().int().min(0).max(400).default(0),
+};
+
 export const globalSettingsSchema = z.object({
   brand: z.string().default("TEYE"),
   handle: z.string().default("@TEYEcs"),
@@ -65,6 +71,7 @@ export const startingSoonSchema = z.object({
       "INSTAGRAM / @TEYECS",
     ]),
   overrideGameLabel: z.string().nullable().default(null),
+  ...verticalPaddingFields,
 });
 
 export const liveSchema = z.object({
@@ -114,6 +121,7 @@ export const liveSchema = z.object({
   gameCaptureLabel: z.string().default("GAME CAPTURE"),
   gameCaptureWidthVertical: z.number().default(1008),
   gameCaptureHeightVertical: z.number().default(702),
+  ...verticalPaddingFields,
 });
 
 export const brbSchema = z.object({
@@ -132,6 +140,7 @@ export const brbSchema = z.object({
   showCornerNote: z.boolean().default(true),
   cornerNote: z.string().default("chat's still open — keep talking"),
   showSocials: z.boolean().default(true),
+  ...verticalPaddingFields,
 });
 
 export const justChattingSchema = z.object({
@@ -157,6 +166,7 @@ export const justChattingSchema = z.object({
   hideCommandMessages: z.boolean().default(true),
   showSocials: z.boolean().default(true),
   badgeText: z.string().default("JUST CHATTING"),
+  ...verticalPaddingFields,
 });
 
 export const endingSchema = z.object({
@@ -179,6 +189,7 @@ export const endingSchema = z.object({
   showSocials: z.boolean().default(true),
   socialsHeading: z.string().default("FIND ME EVERYWHERE"),
   kicker: z.string().default("GG · STREAM OVER"),
+  ...verticalPaddingFields,
 });
 
 export const appSettingsSchema = z.object({

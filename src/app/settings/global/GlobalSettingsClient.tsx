@@ -349,7 +349,7 @@ export default function GlobalSettingsPage() {
               </Field>
               <Field
                 label="Mobile top safe area (px)"
-                hint="Shifts all vertical-scene content down by this amount (1080×1920). Consumes part of the bottom chat safe strip. 0 = layout starts at the top."
+                hint="Shifts all vertical-scene content down by this amount (1080×1920) and shrinks the usable height so the bottom chat strip stays clear. Scenes can add more. 0 = layout starts at the top."
               >
                 <TextInput
                   value={topSafeArea}
@@ -358,7 +358,7 @@ export default function GlobalSettingsPage() {
               </Field>
               <Field
                 label="Side padding (px)"
-                hint="Left and right inset applied to all 1080×1920 scenes. 0 = content spans the full width."
+                hint="Left and right inset applied to all 1080×1920 scenes. Scenes can add more on top. Fixed frames (facecam, gameplay, camera) shrink to fit. 0 = content spans the full width."
               >
                 <TextInput
                   value={sidePadding}

@@ -5,12 +5,12 @@ import type {
   JustChattingSettings,
 } from "@/lib/settings/schema";
 import type { LiveChatMessage } from "@/lib/sse/bus";
+import { resolveVerticalLayout } from "@/lib/layout/vertical";
 import {
   ChatFeed,
   CornerFrame,
   LiveBadge,
   SocialRail,
-  verticalSafeAreaStyle,
 } from "@/components/parts";
 
 type Props = {
@@ -266,9 +266,12 @@ export function JustChattingVertical({
   chat,
 }: Props) {
   const messages = chat.slice(-Math.min(settings.maxMessages, 3));
-  const safe = global.verticalSafeAreaPx;
-  const topSafe = global.verticalTopSafeAreaPx;
-  const sidePad = global.verticalSidePaddingPx;
+  const layout = resolveVerticalLayout(global, settings);
+  const camera = layout.frameSize(
+    settings.cameraWidthVertical,
+    settings.cameraHeightVertical,
+    40,
+  );
 
   return (
     <div
@@ -300,7 +303,7 @@ export function JustChattingVertical({
         </>
       )}
 
-      <div style={verticalSafeAreaStyle(topSafe, safe, sidePad)}>
+      <div style={layout.boxStyle}>
         <div
           style={{
             position: "absolute",
@@ -336,8 +339,8 @@ export function JustChattingVertical({
             <div
               style={{
                 position: "relative",
-                width: settings.cameraWidthVertical,
-                height: settings.cameraHeightVertical,
+                width: camera.width,
+                height: camera.height,
                 flexShrink: 0,
               }}
             >

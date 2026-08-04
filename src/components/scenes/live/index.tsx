@@ -3,13 +3,13 @@
 import type { GlobalSettings, LiveSettings } from "@/lib/settings/schema";
 import { resolveStreamTitle } from "@/lib/settings/schema";
 import { formatUptime, useUptimeSeconds } from "@/lib/hooks/useLiveFeed";
+import { resolveVerticalLayout } from "@/lib/layout/vertical";
 import {
   AudioBars,
   CornerFrame,
   LiveBadge,
   SocialRail,
   StatCard,
-  verticalSafeAreaStyle,
 } from "@/components/parts";
 
 type Props = {
@@ -370,9 +370,17 @@ export function LiveVertical({
   const uptime = formatUptime(
     useUptimeSeconds(uptimeStartedAt, uptimeSeconds),
   );
-  const safe = global.verticalSafeAreaPx;
-  const topSafe = global.verticalTopSafeAreaPx;
-  const sidePad = global.verticalSidePaddingPx;
+  const layout = resolveVerticalLayout(global, settings);
+  const game = layout.frameSize(
+    settings.gameCaptureWidthVertical,
+    settings.gameCaptureHeightVertical,
+    36,
+  );
+  const cam = layout.frameSize(
+    settings.facecamWidthVertical,
+    settings.facecamHeightVertical,
+    36,
+  );
 
   return (
     <div
@@ -393,7 +401,7 @@ export function LiveVertical({
         />
       )}
 
-      <div style={verticalSafeAreaStyle(topSafe, safe, sidePad)}>
+      <div style={layout.boxStyle}>
         {settings.showTopBar && (
           <div
             style={{
@@ -489,8 +497,8 @@ export function LiveVertical({
             <div
               style={{
                 position: "relative",
-                width: settings.gameCaptureWidthVertical,
-                height: settings.gameCaptureHeightVertical,
+                width: game.width,
+                height: game.height,
                 flexShrink: 0,
               }}
             >
@@ -538,8 +546,8 @@ export function LiveVertical({
             <div
               style={{
                 position: "relative",
-                width: settings.facecamWidthVertical,
-                height: settings.facecamHeightVertical,
+                width: cam.width,
+                height: cam.height,
                 flexShrink: 0,
               }}
             >

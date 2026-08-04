@@ -103,6 +103,54 @@ export function SceneSettingsPage({ scene }: { scene: SceneId }) {
           ) : (
             <>
               {fields}
+              <Section title="Vertical spacing (extra)">
+                <p style={{ color: "#8A8A93", fontSize: 13, margin: 0 }}>
+                  Added on top of the global vertical padding. Leave at 0 to use
+                  global values only.
+                </p>
+                <Field
+                  label="Extra top padding (px)"
+                  hint={`Added on top of the global ${data.settings.global.verticalTopSafeAreaPx}px, total ${data.settings.global.verticalTopSafeAreaPx + Number((draft as { verticalExtraTopPx?: number }).verticalExtraTopPx || 0)}px`}
+                >
+                  <TextInput
+                    value={String(
+                      (draft as { verticalExtraTopPx?: number })
+                        .verticalExtraTopPx ?? 0,
+                    )}
+                    onChange={(v) => {
+                      setDraft((prev) =>
+                        prev
+                          ? { ...prev, verticalExtraTopPx: Number(v) || 0 }
+                          : prev,
+                      );
+                      setDirty(true);
+                      setSaved(false);
+                      setError(null);
+                    }}
+                  />
+                </Field>
+                <Field
+                  label="Extra side padding (px)"
+                  hint={`Added on top of the global ${data.settings.global.verticalSidePaddingPx}px, total ${data.settings.global.verticalSidePaddingPx + Number((draft as { verticalExtraSidePx?: number }).verticalExtraSidePx || 0)}px each side`}
+                >
+                  <TextInput
+                    value={String(
+                      (draft as { verticalExtraSidePx?: number })
+                        .verticalExtraSidePx ?? 0,
+                    )}
+                    onChange={(v) => {
+                      setDraft((prev) =>
+                        prev
+                          ? { ...prev, verticalExtraSidePx: Number(v) || 0 }
+                          : prev,
+                      );
+                      setDirty(true);
+                      setSaved(false);
+                      setError(null);
+                    }}
+                  />
+                </Field>
+              </Section>
               <SaveBar
                 saving={saving}
                 saved={saved}
@@ -393,13 +441,13 @@ function renderFields(
           </Field>
         </Section>
         <Section title="Facecam size (vertical)">
-          <Field label="Width (px)" hint="Default 1008 (full width with 36px side margins)">
+          <Field label="Width (px)" hint="Default 1008. Acts as a maximum — shrinks to fit side padding while keeping aspect ratio.">
             <TextInput
               value={String(d.facecamWidthVertical)}
               onChange={(v) => u("facecamWidthVertical", Number(v) || 1008)}
             />
           </Field>
-          <Field label="Height (px)" hint="Default 576">
+          <Field label="Height (px)" hint="Default 576. Scales with width when clamped.">
             <TextInput
               value={String(d.facecamHeightVertical)}
               onChange={(v) => u("facecamHeightVertical", Number(v) || 576)}
@@ -407,13 +455,13 @@ function renderFields(
           </Field>
         </Section>
         <Section title="Game capture size (vertical)">
-          <Field label="Width (px)" hint="Default 1008">
+          <Field label="Width (px)" hint="Default 1008. Acts as a maximum — shrinks to fit side padding while keeping aspect ratio.">
             <TextInput
               value={String(d.gameCaptureWidthVertical)}
               onChange={(v) => u("gameCaptureWidthVertical", Number(v) || 1008)}
             />
           </Field>
-          <Field label="Height (px)" hint="Default 702">
+          <Field label="Height (px)" hint="Default 702. Scales with width when clamped.">
             <TextInput
               value={String(d.gameCaptureHeightVertical)}
               onChange={(v) => u("gameCaptureHeightVertical", Number(v) || 702)}
@@ -489,13 +537,13 @@ function renderFields(
           <Toggle label="Hide !commands" checked={!!d.hideCommandMessages} onChange={(v) => u("hideCommandMessages", v)} />
         </Section>
         <Section title="Camera size (vertical)">
-          <Field label="Width (px)" hint="Default 1000 (full width with 40px side margins)">
+          <Field label="Width (px)" hint="Default 1000. Acts as a maximum — shrinks to fit side padding while keeping aspect ratio.">
             <TextInput
               value={String(d.cameraWidthVertical)}
               onChange={(v) => u("cameraWidthVertical", Number(v) || 1000)}
             />
           </Field>
-          <Field label="Height (px)" hint="Default 790">
+          <Field label="Height (px)" hint="Default 790. Scales with width when clamped.">
             <TextInput
               value={String(d.cameraHeightVertical)}
               onChange={(v) => u("cameraHeightVertical", Number(v) || 790)}
