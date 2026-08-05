@@ -166,7 +166,11 @@ export function JustChattingHorizontal({
               </div>
             )}
           </div>
-          <ChatFeed messages={messages} />
+          {settings.showChatMessages ? (
+            <ChatFeed messages={messages} />
+          ) : (
+            <div style={{ flex: 1 }} />
+          )}
           {settings.showLatestSubscriber && (
             <div
               style={{
@@ -410,7 +414,11 @@ export function JustChattingVertical({
                   </div>
                 )}
               </div>
-              <ChatFeed messages={messages} />
+              {settings.showChatMessages ? (
+                <ChatFeed messages={messages} />
+              ) : (
+                <div style={{ flex: 1 }} />
+              )}
               {settings.showLatestSubscriber &&
                 (latestSubscriber || settings.latestSubscriberFallback) && (
                 <div

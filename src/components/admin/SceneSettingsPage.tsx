@@ -529,6 +529,7 @@ function renderFields(
           <Toggle label="Camera frame" checked={!!d.showCameraFrame} onChange={(v) => u("showCameraFrame", v)} />
           <Toggle label="Camera label" checked={!!d.showCameraLabel} onChange={(v) => u("showCameraLabel", v)} />
           <Toggle label="Chat panel" checked={!!d.showChatPanel} onChange={(v) => u("showChatPanel", v)} />
+          <Toggle label="Chat messages (off when using a 3rd-party chat overlay)" checked={!!d.showChatMessages} onChange={(v) => u("showChatMessages", v)} />
           <Toggle label="Viewer count" checked={!!d.showViewerCount} onChange={(v) => u("showViewerCount", v)} />
           <Toggle label="Latest subscriber" checked={!!d.showLatestSubscriber} onChange={(v) => u("showLatestSubscriber", v)} />
           <Toggle label="Agenda bar" checked={!!d.showAgenda} onChange={(v) => u("showAgenda", v)} />
