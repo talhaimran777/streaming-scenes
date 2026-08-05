@@ -84,6 +84,7 @@ export const liveSchema = z.object({
   showUptime: z.boolean().default(true),
   uptimePrefix: z.string().default("UPTIME"),
   showBrand: z.boolean().default(true),
+  showStreamerName: z.boolean().default(false),
   overrideTitle: z.string().nullable().default(null),
   showStatsRail: z.boolean().default(false),
   showRating: z.boolean().default(false),

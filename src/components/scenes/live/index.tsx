@@ -12,6 +12,10 @@ import {
   StatCard,
 } from "@/components/parts";
 
+const TOP_BAR_BG =
+  "linear-gradient(180deg,rgba(7,7,10,.96),rgba(7,7,10,.62))";
+const TOP_BAR_BORDER = "1px solid rgba(255,255,255,.10)";
+
 type Props = {
   global: GlobalSettings;
   settings: LiveSettings;
@@ -100,59 +104,67 @@ export function LiveHorizontal({
             right: 0,
             top: 0,
             height: 104,
-            background:
-              "linear-gradient(180deg,rgba(7,7,10,.96),rgba(7,7,10,.62))",
-            borderBottom: "1px solid rgba(255,255,255,.10)",
             display: "flex",
             alignItems: "stretch",
           }}
         >
-          {settings.showLiveBadge && (
-            <LiveBadge clip text={settings.liveBadgeText} />
-          )}
           <div
             style={{
-              flex: 1,
+              flex: settings.showStreamerName ? 1 : "0 0 auto",
               display: "flex",
-              alignItems: "center",
-              gap: 28,
-              paddingLeft: 44,
+              alignItems: "stretch",
+              background: TOP_BAR_BG,
+              borderBottom: TOP_BAR_BORDER,
             }}
           >
-            {settings.showTitle && (
-              <div
-                style={{
-                  fontSize: 36,
-                  fontWeight: 600,
-                  letterSpacing: "0.01em",
-                }}
-              >
-                {title}
-              </div>
+            {settings.showLiveBadge && (
+              <LiveBadge clip text={settings.liveBadgeText} />
             )}
-            {settings.showTitle && settings.showUptime && (
-              <div
-                style={{
-                  width: 2,
-                  height: 30,
-                  background: "rgba(255,255,255,.16)",
-                }}
-              />
-            )}
-            {settings.showUptime && (
-              <div
-                style={{
-                  fontFamily: "var(--font-jetbrains), monospace",
-                  fontSize: 24,
-                  letterSpacing: "0.16em",
-                  color: "#8A8A93",
-                }}
-              >
-                {settings.uptimePrefix} {uptime}
-              </div>
-            )}
+            <div
+              style={{
+                flex: settings.showStreamerName ? 1 : "0 0 auto",
+                display: "flex",
+                alignItems: "center",
+                gap: 28,
+                paddingLeft: 44,
+                paddingRight: settings.showStreamerName ? 0 : 44,
+              }}
+            >
+              {settings.showTitle && (
+                <div
+                  style={{
+                    fontSize: 36,
+                    fontWeight: 600,
+                    letterSpacing: "0.01em",
+                  }}
+                >
+                  {title}
+                </div>
+              )}
+              {settings.showTitle && settings.showUptime && (
+                <div
+                  style={{
+                    width: 2,
+                    height: 30,
+                    background: "rgba(255,255,255,.16)",
+                  }}
+                />
+              )}
+              {settings.showUptime && (
+                <div
+                  style={{
+                    fontFamily: "var(--font-jetbrains), monospace",
+                    fontSize: 24,
+                    letterSpacing: "0.16em",
+                    color: "#8A8A93",
+                  }}
+                >
+                  {settings.uptimePrefix} {uptime}
+                </div>
+              )}
+            </div>
           </div>
-          {settings.showBrand && (
+          {settings.showStreamerName && (
             <div
               style={{
                 flex: "0 0 auto",
@@ -160,6 +172,8 @@ export function LiveHorizontal({
                 alignItems: "center",
                 gap: 22,
                 paddingRight: 44,
+                background: TOP_BAR_BG,
+                borderBottom: TOP_BAR_BORDER,
               }}
             >
               <div

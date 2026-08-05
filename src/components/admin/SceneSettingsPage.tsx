@@ -389,7 +389,8 @@ function renderFields(
           <Toggle label="LIVE badge" checked={!!d.showLiveBadge} onChange={(v) => u("showLiveBadge", v)} />
           <Toggle label="Title" checked={!!d.showTitle} onChange={(v) => u("showTitle", v)} />
           <Toggle label="Uptime" checked={!!d.showUptime} onChange={(v) => u("showUptime", v)} />
-          <Toggle label="Brand" checked={!!d.showBrand} onChange={(v) => u("showBrand", v)} />
+          <Toggle label="Brand (vertical top bar)" checked={!!d.showBrand} onChange={(v) => u("showBrand", v)} />
+          <Toggle label="Streamer name + bar (top right, horizontal)" checked={!!d.showStreamerName} onChange={(v) => u("showStreamerName", v)} />
           <Toggle label="Facecam frame" checked={!!d.showFacecam} onChange={(v) => u("showFacecam", v)} />
           <Toggle label="Facecam label" checked={!!d.showFacecamLabel} onChange={(v) => u("showFacecamLabel", v)} />
           <Toggle label="Audio bars" checked={!!d.showAudioBars} onChange={(v) => u("showAudioBars", v)} />
