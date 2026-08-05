@@ -335,6 +335,21 @@ export default function GlobalSettingsPage() {
                   }
                 />
               </Field>
+              <Field label="Socials layout">
+                <select
+                  className="admin-select"
+                  value={draft.socialsLayout}
+                  onChange={(e) =>
+                    update(
+                      "socialsLayout",
+                      e.target.value as GlobalSettings["socialsLayout"],
+                    )
+                  }
+                >
+                  <option value="grid">Two columns (default)</option>
+                  <option value="inline">One line</option>
+                </select>
+              </Field>
             </Section>
 
             <Section title="Vertical layout">

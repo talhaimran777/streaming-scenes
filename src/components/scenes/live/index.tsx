@@ -8,7 +8,7 @@ import {
   AudioBars,
   CornerFrame,
   LiveBadge,
-  SocialRail,
+  SocialBlock,
   StatCard,
 } from "@/components/parts";
 
@@ -333,8 +333,9 @@ export function LiveHorizontal({
           }}
         >
           {settings.showSocials ? (
-            <SocialRail
+            <SocialBlock
               items={global.socials}
+              layout="inline"
               gap={36}
               fontSize={22}
               maxWidth={1200}
@@ -490,7 +491,7 @@ export function LiveVertical({
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: 40,
+            gap: 32,
           }}
         >
           {settings.showGameCapture && (
@@ -618,9 +619,9 @@ export function LiveVertical({
             <div
               style={{
                 alignSelf: "stretch",
-                height: 66,
+                minHeight: 86,
                 display: "flex",
-                alignItems: "center",
+                alignItems: "flex-start",
                 justifyContent: "space-between",
                 fontFamily: "var(--font-jetbrains), monospace",
                 fontSize: 22,
@@ -630,11 +631,9 @@ export function LiveVertical({
               }}
             >
               {settings.showSocials ? (
-                <SocialRail
+                <SocialBlock
                   items={global.socials}
-                  gap={24}
-                  fontSize={22}
-                  maxWidth={700}
+                  layout={global.socialsLayout}
                 />
               ) : (
                 <div />

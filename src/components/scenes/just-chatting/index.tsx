@@ -10,7 +10,8 @@ import {
   ChatFeed,
   CornerFrame,
   LiveBadge,
-  SocialRail,
+  SocialBlock,
+  SOCIALS,
 } from "@/components/parts";
 
 type Props = {
@@ -121,7 +122,7 @@ export function JustChattingHorizontal({
             right: 56,
             top: 56,
             width: 600,
-            bottom: 150,
+            bottom: 186,
             border: "1px solid rgba(255,255,255,.12)",
             background: "rgba(12,12,16,.88)",
             display: "flex",
@@ -241,7 +242,7 @@ export function JustChattingHorizontal({
             right: 56,
             bottom: 56,
             width: 600,
-            height: 78,
+            height: 110,
             border: "1px solid rgba(255,255,255,.12)",
             background: "rgba(12,12,16,.88)",
             display: "flex",
@@ -251,7 +252,14 @@ export function JustChattingHorizontal({
             boxSizing: "border-box",
           }}
         >
-          <SocialRail items={global.socials} gap={24} fontSize={20} maxWidth={560} />
+          <SocialBlock
+            items={global.socials}
+            layout={global.socialsLayout}
+            columns={2}
+            fontSize={SOCIALS.fontSizeCompact}
+            maxWidth={560}
+            columnGap={24}
+          />
         </div>
       )}
     </div>
@@ -435,11 +443,9 @@ export function JustChattingVertical({
                 flexShrink: 0,
               }}
             >
-              <SocialRail
+              <SocialBlock
                 items={global.socials}
-                gap={28}
-                fontSize={24}
-                maxWidth={1000}
+                layout={global.socialsLayout}
               />
             </div>
           )}

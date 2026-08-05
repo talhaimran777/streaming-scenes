@@ -5,6 +5,7 @@ import { resolveVerticalLayout } from "@/lib/layout/vertical";
 import {
   BrandMark,
   ScanlineOverlay,
+  SocialBlock,
 } from "@/components/parts";
 
 type Props = {
@@ -200,23 +201,12 @@ export function EndingHorizontal({ global, settings }: Props) {
           >
             {settings.socialsHeading}
           </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 14,
-              alignItems: "flex-end",
-              fontSize: 30,
-              letterSpacing: "0.1em",
-              color: "#DDDDE2",
-            }}
-          >
-            {global.socials.map((s) => (
-              <div key={s.label}>
-                {s.label} / {s.value}
-              </div>
-            ))}
-          </div>
+          <SocialBlock
+            items={global.socials}
+            layout={global.socialsLayout}
+            columns={1}
+            align="end"
+          />
         </div>
       )}
     </div>
@@ -348,22 +338,10 @@ export function EndingVertical({ global, settings }: Props) {
             >
               {settings.socialsHeading}
             </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "16px 24px",
-                fontSize: 30,
-                letterSpacing: "0.08em",
-                color: "#DDDDE2",
-              }}
-            >
-              {global.socials.map((s) => (
-                <div key={s.label}>
-                  {s.label} / {s.value}
-                </div>
-              ))}
-            </div>
+            <SocialBlock
+              items={global.socials}
+              layout={global.socialsLayout}
+            />
           </div>
         )}
       </div>

@@ -35,6 +35,7 @@ export const globalSettingsSchema = z.object({
   verticalSafeAreaPx: z.number().int().min(0).max(700).default(312),
   verticalTopSafeAreaPx: z.number().int().min(0).max(600).default(0),
   verticalSidePaddingPx: z.number().int().min(0).max(300).default(0),
+  socialsLayout: z.enum(["grid", "inline"]).default("grid"),
 });
 
 export const startingSoonSchema = z.object({

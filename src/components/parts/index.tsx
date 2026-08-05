@@ -454,48 +454,121 @@ export function ChatFeed({
   );
 }
 
-export function SocialRail({
-  items,
-  gap = 30,
-  fontSize = 22,
-  maxWidth,
+export const SOCIALS = {
+  fontSize: 24,
+  fontSizeCompact: 20,
+  labelColor: "#E8192C",
+  valueColor: "#B4B4BC",
+  letterSpacing: "0.18em",
+} as const;
+
+type SocialItem = { label: string; value: string };
+
+function SocialItemRow({
+  label,
+  value,
+  innerGap = 12,
 }: {
-  items: Array<{ label: string; value: string }>;
-  gap?: number;
-  fontSize?: number;
-  maxWidth?: number;
+  label: string;
+  value: string;
+  innerGap?: number;
 }) {
-  const est =
-    items.reduce(
-      (sum, s) => sum + (s.label.length + s.value.length) * fontSize * 0.78 + 12,
-      0,
-    ) + gap * Math.max(0, items.length - 1);
-  const scale =
-    maxWidth && est > maxWidth ? Math.max(maxWidth / est, 0.62) : 1;
-  const sizedFont = Math.round(fontSize * scale);
-  const sizedGap = Math.round(gap * scale);
-  const innerGap = Math.max(6, Math.round(12 * scale));
+  return (
+    <span style={{ display: "inline-flex", gap: innerGap }}>
+      <span style={{ color: SOCIALS.labelColor }}>{label}</span>
+      <span style={{ color: SOCIALS.valueColor }}>{value}</span>
+    </span>
+  );
+}
+
+export function SocialBlock({
+  items,
+  layout = "grid",
+  columns = 2,
+  fontSize = SOCIALS.fontSize,
+  align = "start",
+  maxWidth,
+  rowGap = 14,
+  columnGap = 40,
+  gap = 30,
+}: {
+  items: SocialItem[];
+  layout?: "grid" | "inline";
+  columns?: number;
+  fontSize?: number;
+  align?: "start" | "end" | "center";
+  maxWidth?: number;
+  rowGap?: number;
+  columnGap?: number;
+  gap?: number;
+}) {
+  if (layout === "inline") {
+    const est =
+      items.reduce(
+        (sum, s) =>
+          sum + (s.label.length + s.value.length) * fontSize * 0.78 + 12,
+        0,
+      ) + gap * Math.max(0, items.length - 1);
+    const scale =
+      maxWidth && est > maxWidth ? Math.max(maxWidth / est, 0.62) : 1;
+    const sizedFont = Math.round(fontSize * scale);
+    const sizedGap = Math.round(gap * scale);
+    const innerGap = Math.max(6, Math.round(12 * scale));
+
+    return (
+      <div
+        style={{
+          display: "flex",
+          gap: sizedGap,
+          fontFamily: "var(--font-jetbrains), monospace",
+          fontSize: sizedFont,
+          letterSpacing: SOCIALS.letterSpacing,
+          alignItems: "center",
+          justifyContent:
+            align === "end"
+              ? "flex-end"
+              : align === "center"
+                ? "center"
+                : "flex-start",
+        }}
+      >
+        {items.map((s) => (
+          <SocialItemRow
+            key={`${s.label}-${s.value}`}
+            label={s.label}
+            value={s.value}
+            innerGap={innerGap}
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div
       style={{
-        display: "flex",
-        gap: sizedGap,
+        display: "grid",
+        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+        gap: `${rowGap}px ${columnGap}px`,
         fontFamily: "var(--font-jetbrains), monospace",
-        fontSize: sizedFont,
-        letterSpacing: "0.18em",
-        color: "#B4B4BC",
-        alignItems: "center",
+        fontSize,
+        letterSpacing: SOCIALS.letterSpacing,
+        justifyItems:
+          align === "end"
+            ? "end"
+            : align === "center"
+              ? "center"
+              : "start",
+        width: maxWidth ? "100%" : undefined,
+        maxWidth,
       }}
     >
       {items.map((s) => (
-        <span
+        <SocialItemRow
           key={`${s.label}-${s.value}`}
-          style={{ display: "inline-flex", gap: innerGap }}
-        >
-          <span style={{ color: "#E8192C" }}>{s.label}</span>
-          <span>{s.value}</span>
-        </span>
+          label={s.label}
+          value={s.value}
+        />
       ))}
     </div>
   );

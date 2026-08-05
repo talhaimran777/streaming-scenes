@@ -5,7 +5,7 @@ import { resolveVerticalLayout } from "@/lib/layout/vertical";
 import {
   BrandMark,
   ScanlineOverlay,
-  SocialRail,
+  SocialBlock,
 } from "@/components/parts";
 
 type Props = {
@@ -144,7 +144,7 @@ export function BrbHorizontal({ global, settings }: Props) {
 
       {settings.showSocials && (
         <div style={{ position: "absolute", left: 56, bottom: 52 }}>
-          <SocialRail items={global.socials} maxWidth={1000} />
+          <SocialBlock items={global.socials} layout="inline" maxWidth={1000} />
         </div>
       )}
       {settings.showCornerNote && (
@@ -307,10 +307,9 @@ export function BrbVertical({ global, settings }: Props) {
               justifyContent: "center",
             }}
           >
-            <SocialRail
+            <SocialBlock
               items={global.socials}
-              fontSize={24}
-              maxWidth={1000}
+              layout={global.socialsLayout}
             />
           </div>
         )}
