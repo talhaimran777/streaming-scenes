@@ -34,6 +34,10 @@ const defaultEnvelope = (): LiveEnvelope => ({
   storage: "filesystem",
 });
 
+/** Force reconnect if OBS/CEF stalls the SSE stream without firing onerror. */
+const STALE_MS = 45_000;
+const STALE_CHECK_MS = 10_000;
+
 export function useLiveFeed() {
   const [data, setData] = useState<LiveEnvelope>(defaultEnvelope);
   const [connected, setConnected] = useState(false);
@@ -43,13 +47,30 @@ export function useLiveFeed() {
   useEffect(() => {
     let closed = false;
     let retry: ReturnType<typeof setTimeout> | null = null;
+    let staleWatch: ReturnType<typeof setInterval> | null = null;
+    let lastEventAt = 0;
+
+    const touch = () => {
+      lastEventAt = Date.now();
+    };
+
+    const scheduleReconnect = () => {
+      setConnected(false);
+      esRef.current?.close();
+      esRef.current = null;
+      if (retry) clearTimeout(retry);
+      retry = setTimeout(connect, 2000);
+    };
 
     const connect = () => {
       if (closed) return;
+      esRef.current?.close();
       const es = new EventSource("/api/live");
       esRef.current = es;
+      touch();
 
       es.addEventListener("snapshot", (ev) => {
+        touch();
         const payload = JSON.parse((ev as MessageEvent).data) as LiveEnvelope;
         setData(payload);
         setConnected(true);
@@ -57,43 +78,60 @@ export function useLiveFeed() {
       });
 
       es.addEventListener("settings", (ev) => {
+        touch();
         const settings = JSON.parse((ev as MessageEvent).data) as AppSettings;
         setData((prev) => ({ ...prev, settings }));
       });
 
       es.addEventListener("live", (ev) => {
+        touch();
         const live = JSON.parse((ev as MessageEvent).data) as LiveData;
         setData((prev) => ({ ...prev, live }));
       });
 
       es.addEventListener("quota", (ev) => {
+        touch();
         const quota = JSON.parse((ev as MessageEvent).data) as QuotaState;
         setData((prev) => ({ ...prev, quota }));
       });
 
       es.addEventListener("youtube-status", (ev) => {
+        touch();
         const youtube = JSON.parse((ev as MessageEvent).data) as LiveEnvelope["youtube"];
         setData((prev) => ({ ...prev, youtube }));
       });
 
       es.addEventListener("clients", (ev) => {
+        touch();
         const payload = JSON.parse((ev as MessageEvent).data) as { count: number };
         setData((prev) => ({ ...prev, clients: payload.count }));
       });
 
+      es.addEventListener("ping", () => {
+        touch();
+        setConnected(true);
+      });
+
       es.onerror = () => {
-        setConnected(false);
-        es.close();
-        retry = setTimeout(connect, 2000);
+        scheduleReconnect();
       };
     };
 
     connect();
 
+    staleWatch = setInterval(() => {
+      if (closed || !esRef.current) return;
+      if (lastEventAt > 0 && Date.now() - lastEventAt > STALE_MS) {
+        scheduleReconnect();
+      }
+    }, STALE_CHECK_MS);
+
     return () => {
       closed = true;
       if (retry) clearTimeout(retry);
+      if (staleWatch) clearInterval(staleWatch);
       esRef.current?.close();
+      esRef.current = null;
     };
   }, []);
 

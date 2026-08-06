@@ -19,11 +19,29 @@ function encode(event: string, data: unknown) {
   return `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
 }
 
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
   const encoder = new TextEncoder();
   let closed = false;
+  let cleanedUp = false;
+  let clientRegistered = false;
   let unsubscribe: (() => void) | null = null;
   let heartbeat: ReturnType<typeof setInterval> | null = null;
+
+  const teardown = () => {
+    if (cleanedUp) return;
+    cleanedUp = true;
+    closed = true;
+    if (heartbeat) {
+      clearInterval(heartbeat);
+      heartbeat = null;
+    }
+    unsubscribe?.();
+    unsubscribe = null;
+    if (clientRegistered) {
+      clientRegistered = false;
+      removeLiveClient();
+    }
+  };
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -32,11 +50,18 @@ export async function GET(_req: NextRequest) {
         try {
           controller.enqueue(encoder.encode(encode(event, data)));
         } catch {
-          // closed
+          teardown();
         }
       };
 
       const live = await addLiveClient();
+      clientRegistered = true;
+
+      if (closed) {
+        teardown();
+        return;
+      }
+
       const [settings, quota, youtube] = await Promise.all([
         readSettings(),
         getQuota(),
@@ -52,6 +77,8 @@ export async function GET(_req: NextRequest) {
         storage: getSettingsStorageBackend(),
       });
 
+      if (closed) return;
+
       const onAny = (msg: unknown) => {
         const { event, payload } = msg as { event: BusEvent; payload: unknown };
         send(event, payload);
@@ -61,12 +88,15 @@ export async function GET(_req: NextRequest) {
       heartbeat = setInterval(() => {
         send("ping", { t: Date.now() });
       }, 15000);
+
+      if (req.signal.aborted) {
+        teardown();
+        return;
+      }
+      req.signal.addEventListener("abort", teardown, { once: true });
     },
     cancel() {
-      closed = true;
-      unsubscribe?.();
-      if (heartbeat) clearInterval(heartbeat);
-      removeLiveClient();
+      teardown();
     },
   });
 
