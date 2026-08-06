@@ -104,7 +104,13 @@ export default function DashboardPage() {
           <Stat
             label="Broadcast"
             value={
-              !ready ? "…" : data.live.isLive ? `${data.live.viewers} VIEWERS` : "OFFLINE"
+              !ready
+                ? "…"
+                : !data.live.isLive
+                  ? "OFFLINE"
+                  : data.settings.global.viewerCountSource === "external"
+                    ? "EXTERNAL"
+                    : `${data.live.viewers} VIEWERS`
             }
             accent={data.live.isLive}
           />

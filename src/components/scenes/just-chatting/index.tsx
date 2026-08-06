@@ -22,6 +22,32 @@ type Props = {
   chat: LiveChatMessage[];
 };
 
+function ExternalSlot({
+  width,
+  height,
+  showGuide,
+  display = "inline-block",
+}: {
+  width: number;
+  height: number;
+  showGuide: boolean;
+  display?: "inline-block" | "block";
+}) {
+  return (
+    <span
+      style={{
+        display,
+        width,
+        height,
+        verticalAlign: "middle",
+        boxSizing: "border-box",
+        border: showGuide ? "1px dashed rgba(255,59,59,.55)" : "1px solid transparent",
+        background: showGuide ? "rgba(255,59,59,.08)" : "transparent",
+      }}
+    />
+  );
+}
+
 export function JustChattingHorizontal({
   global,
   settings,
@@ -30,6 +56,8 @@ export function JustChattingHorizontal({
   chat,
 }: Props) {
   const messages = chat.slice(-settings.maxMessages);
+  const externalViewers = global.viewerCountSource === "external";
+  const externalFollower = global.latestFollowerSource === "external";
 
   return (
     <div
@@ -160,9 +188,21 @@ export function JustChattingHorizontal({
                   fontFamily: "var(--font-jetbrains), monospace",
                   fontSize: 20,
                   color: "#FF3B3B",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
                 }}
               >
-                {viewers} {settings.watchingSuffix}
+                {externalViewers ? (
+                  <ExternalSlot
+                    width={settings.externalViewerSlotWidthPx}
+                    height={24}
+                    showGuide={global.showExternalSlotGuides}
+                  />
+                ) : (
+                  <span>{viewers}</span>
+                )}
+                <span>{settings.watchingSuffix}</span>
               </div>
             )}
           </div>
@@ -191,11 +231,20 @@ export function JustChattingHorizontal({
               >
                 {settings.latestFollowerLabel}
               </div>
-              <div style={{ fontSize: 30, fontWeight: 600 }}>
-                {latestSubscriber ||
-                  settings.latestSubscriberFallback ||
-                  "—"}
-              </div>
+              {externalFollower ? (
+                <ExternalSlot
+                  width={settings.externalFollowerSlotWidthPx}
+                  height={settings.externalFollowerSlotHeightPx}
+                  showGuide={global.showExternalSlotGuides}
+                  display="block"
+                />
+              ) : (
+                <div style={{ fontSize: 30, fontWeight: 600 }}>
+                  {latestSubscriber ||
+                    settings.latestSubscriberFallback ||
+                    "—"}
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -284,6 +333,8 @@ export function JustChattingVertical({
     settings.cameraHeightVertical,
     40,
   );
+  const externalViewers = global.viewerCountSource === "external";
+  const externalFollower = global.latestFollowerSource === "external";
 
   return (
     <div
@@ -408,9 +459,21 @@ export function JustChattingVertical({
                       fontFamily: "var(--font-jetbrains), monospace",
                       fontSize: 20,
                       color: "#FF3B3B",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
                     }}
                   >
-                    {viewers} {settings.watchingSuffix}
+                    {externalViewers ? (
+                      <ExternalSlot
+                        width={settings.externalViewerSlotWidthPx}
+                        height={24}
+                        showGuide={global.showExternalSlotGuides}
+                      />
+                    ) : (
+                      <span>{viewers}</span>
+                    )}
+                    <span>{settings.watchingSuffix}</span>
                   </div>
                 )}
               </div>
@@ -420,7 +483,9 @@ export function JustChattingVertical({
                 <div style={{ flex: 1 }} />
               )}
               {settings.showLatestSubscriber &&
-                (latestSubscriber || settings.latestSubscriberFallback) && (
+                (externalFollower ||
+                  latestSubscriber ||
+                  settings.latestSubscriberFallback) && (
                 <div
                   style={{
                     padding: "18px 28px",
@@ -428,12 +493,23 @@ export function JustChattingVertical({
                     fontFamily: "var(--font-jetbrains), monospace",
                     fontSize: 18,
                     color: "#8A8A93",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
                   }}
                 >
                   {settings.latestFollowerLabelShort} ·{" "}
-                  <span style={{ color: "#fff", fontWeight: 600 }}>
-                    {latestSubscriber || settings.latestSubscriberFallback}
-                  </span>
+                  {externalFollower ? (
+                    <ExternalSlot
+                      width={settings.externalFollowerSlotWidthPx}
+                      height={settings.externalFollowerSlotHeightPx}
+                      showGuide={global.showExternalSlotGuides}
+                    />
+                  ) : (
+                    <span style={{ color: "#fff", fontWeight: 600 }}>
+                      {latestSubscriber || settings.latestSubscriberFallback}
+                    </span>
+                  )}
                 </div>
               )}
             </div>

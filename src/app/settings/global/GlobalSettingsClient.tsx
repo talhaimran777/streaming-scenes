@@ -9,6 +9,7 @@ import {
   Section,
   TextArea,
   TextInput,
+  Toggle,
 } from "@/components/admin/Form";
 import { useLiveFeed } from "@/lib/hooks/useLiveFeed";
 import type { GlobalSettings } from "@/lib/settings/schema";
@@ -401,6 +402,47 @@ export default function GlobalSettingsPage() {
                 </select>
               </Field>
               <Field
+                label="Viewer count source"
+                hint="External leaves an empty slot for a third-party OBS overlay and stops YouTube viewer polling."
+              >
+                <select
+                  className="admin-select"
+                  value={draft.viewerCountSource}
+                  onChange={(e) =>
+                    update(
+                      "viewerCountSource",
+                      e.target.value as GlobalSettings["viewerCountSource"],
+                    )
+                  }
+                >
+                  <option value="youtube">YouTube API</option>
+                  <option value="external">External (third-party overlay)</option>
+                </select>
+              </Field>
+              <Field
+                label="Latest follower source"
+                hint="External leaves an empty slot for a third-party OBS overlay and stops YouTube subscriber polling."
+              >
+                <select
+                  className="admin-select"
+                  value={draft.latestFollowerSource}
+                  onChange={(e) =>
+                    update(
+                      "latestFollowerSource",
+                      e.target.value as GlobalSettings["latestFollowerSource"],
+                    )
+                  }
+                >
+                  <option value="youtube">YouTube API</option>
+                  <option value="external">External (third-party overlay)</option>
+                </select>
+              </Field>
+              <Toggle
+                label="Show external slot guides (dashed outline for OBS alignment)"
+                checked={draft.showExternalSlotGuides}
+                onChange={(v) => update("showExternalSlotGuides", v)}
+              />
+              <Field
                 label="Chat poll interval (ms)"
                 hint="5000–60000. Floor is also set by YouTube."
               >
@@ -411,7 +453,7 @@ export default function GlobalSettingsPage() {
               </Field>
               <Field
                 label="Viewers poll interval (ms)"
-                hint="5000–60000"
+                hint="5000–60000. Only used when viewer count source is YouTube."
               >
                 <TextInput
                   value={viewersInterval}
@@ -420,7 +462,7 @@ export default function GlobalSettingsPage() {
               </Field>
               <Field
                 label="Subscribers poll interval (ms)"
-                hint="15000–300000"
+                hint="15000–300000. Only used when latest follower source is YouTube."
               >
                 <TextInput
                   value={subsInterval}

@@ -563,6 +563,33 @@ function renderFields(
           <Field label="Latest subscriber fallback" hint="Shown when YouTube has no name yet. Leave empty for —">
             <TextInput value={String(d.latestSubscriberFallback ?? "")} onChange={(v) => u("latestSubscriberFallback", v)} />
           </Field>
+          <Field
+            label="External viewer slot width (px)"
+            hint="Only used when Global → Viewer count source is External."
+          >
+            <TextInput
+              value={String(d.externalViewerSlotWidthPx)}
+              onChange={(v) => u("externalViewerSlotWidthPx", Number(v) || 0)}
+            />
+          </Field>
+          <Field
+            label="External follower slot width (px)"
+            hint="Only used when Global → Latest follower source is External."
+          >
+            <TextInput
+              value={String(d.externalFollowerSlotWidthPx)}
+              onChange={(v) => u("externalFollowerSlotWidthPx", Number(v) || 0)}
+            />
+          </Field>
+          <Field
+            label="External follower slot height (px)"
+            hint="Only used when Global → Latest follower source is External."
+          >
+            <TextInput
+              value={String(d.externalFollowerSlotHeightPx)}
+              onChange={(v) => u("externalFollowerSlotHeightPx", Number(v) || 0)}
+            />
+          </Field>
           <Field label="Agenda kicker"><TextInput value={String(d.agendaKicker)} onChange={(v) => u("agendaKicker", v)} /></Field>
           <Field label="Agenda"><TextArea value={String(d.agendaText)} onChange={(v) => u("agendaText", v)} /></Field>
           <Field label="Max messages">

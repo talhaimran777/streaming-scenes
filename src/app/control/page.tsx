@@ -96,6 +96,10 @@ export default function ControlPage() {
 
   const { live, quota, youtube, settings } = data;
   const sessionActive = live.sessionActive;
+  const viewersLabel =
+    settings.global.viewerCountSource === "external"
+      ? "external viewers"
+      : `${live.viewers} viewers`;
 
   return (
     <div className="admin-shell">
@@ -128,7 +132,7 @@ export default function ControlPage() {
             SSE {connected ? "live" : "reconnecting"} ·{" "}
             {youtube.connected ? "YT connected" : "YT offline"} ·{" "}
             {sessionActive
-              ? `SESSION · ${live.viewers} viewers`
+              ? `SESSION · ${viewersLabel}`
               : "idle"}
             {sessionActive
               ? ` · uptime ${formatUptime(uptimeSeconds)}`
@@ -156,7 +160,7 @@ export default function ControlPage() {
             }}
           >
             {sessionActive
-              ? `LIVE${live.streamTitle ? ` · ${live.streamTitle}` : ""} · ${live.viewers} viewers · ${formatUptime(uptimeSeconds)}`
+              ? `LIVE${live.streamTitle ? ` · ${live.streamTitle}` : ""} · ${viewersLabel} · ${formatUptime(uptimeSeconds)}`
               : "IDLE · no YouTube polls"}
           </div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>

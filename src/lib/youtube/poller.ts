@@ -305,9 +305,11 @@ async function pollViewers() {
     return;
   }
   try {
+    const settings = await readSettings();
+    if (settings.global.viewerCountSource === "external") return;
+
     await renewOwnerLease();
     if (!s.ownsPolling) return;
-    const settings = await readSettings();
     const ids = s.live.broadcasts.map((b) => b.id);
     const counts = await fetchViewerCounts(ids);
     s.live.broadcasts = s.live.broadcasts.map((b) => ({
@@ -388,6 +390,9 @@ async function pollSubs() {
   const s = state();
   if (!s.sessionActive || !s.ownsPolling) return;
   try {
+    const settings = await readSettings();
+    if (settings.global.latestFollowerSource === "external") return;
+
     const status = await getYouTubeStatus();
     if (!status.connected) return;
     const name = await fetchLatestSubscriber();
@@ -417,22 +422,33 @@ async function scheduleIntervalLoops() {
 
   if (s.timers.viewers) clearInterval(s.timers.viewers);
   if (s.timers.subs) clearInterval(s.timers.subs);
+  s.timers.viewers = undefined;
+  s.timers.subs = undefined;
 
-  s.timers.viewers = setInterval(() => {
-    void pollViewers();
-  }, settings.global.viewersPollIntervalMs);
+  if (settings.global.viewerCountSource === "youtube") {
+    s.timers.viewers = setInterval(() => {
+      void pollViewers();
+    }, settings.global.viewersPollIntervalMs);
+  }
 
-  s.timers.subs = setInterval(() => {
-    void pollSubs();
-  }, settings.global.subscribersPollIntervalMs);
+  if (settings.global.latestFollowerSource === "youtube") {
+    s.timers.subs = setInterval(() => {
+      void pollSubs();
+    }, settings.global.subscribersPollIntervalMs);
+  }
 }
 
 async function resumeSessionLoops() {
   const s = state();
   if (!s.sessionActive || !s.ownsPolling) return;
-  await pollViewers();
+  const settings = await readSettings();
+  if (settings.global.viewerCountSource === "youtube") {
+    await pollViewers();
+  }
   void pollChat();
-  void pollSubs();
+  if (settings.global.latestFollowerSource === "youtube") {
+    void pollSubs();
+  }
   await scheduleIntervalLoops();
   const quota = await getQuota();
   bus.emit("quota", quota);
