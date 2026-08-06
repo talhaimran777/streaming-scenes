@@ -564,6 +564,7 @@ export function LiveVertical({
                 width: cam.width,
                 height: cam.height,
                 flexShrink: 0,
+                alignSelf: "flex-start",
               }}
             >
               <CornerFrame
@@ -644,7 +645,7 @@ export function LiveVertical({
                 flexShrink: 0,
               }}
             >
-              {settings.showSocials ? (
+              {settings.showSocialsVertical ? (
                 <SocialBlock
                   items={global.socials}
                   layout={global.socialsLayout}

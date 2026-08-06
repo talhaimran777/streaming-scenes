@@ -395,7 +395,8 @@ function renderFields(
           <Toggle label="Facecam label" checked={!!d.showFacecamLabel} onChange={(v) => u("showFacecamLabel", v)} />
           <Toggle label="Audio bars" checked={!!d.showAudioBars} onChange={(v) => u("showAudioBars", v)} />
           <Toggle label="Bottom bar" checked={!!d.showBottomBar} onChange={(v) => u("showBottomBar", v)} />
-          <Toggle label="Socials" checked={!!d.showSocials} onChange={(v) => u("showSocials", v)} />
+          <Toggle label="Socials (horizontal)" checked={!!d.showSocials} onChange={(v) => u("showSocials", v)} />
+          <Toggle label="Socials (vertical)" checked={!!d.showSocialsVertical} onChange={(v) => u("showSocialsVertical", v)} />
           <Toggle label="Game capture frame (vertical)" checked={!!d.showGameCapture} onChange={(v) => u("showGameCapture", v)} />
           <Toggle label="Game capture guide (label)" checked={!!d.showGameCaptureGuide} onChange={(v) => u("showGameCaptureGuide", v)} />
         </Section>

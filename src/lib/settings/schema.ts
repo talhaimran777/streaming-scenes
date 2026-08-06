@@ -116,6 +116,7 @@ export const liveSchema = z.object({
   showAudioBars: z.boolean().default(true),
   showBottomBar: z.boolean().default(true),
   showSocials: z.boolean().default(true),
+  showSocialsVertical: z.boolean().default(true),
   commandsText: z.string().default("!drops · !crosshair · !rank"),
   commandsTextVertical: z.string().default("!rank"),
   showGameCapture: z.boolean().default(true),
