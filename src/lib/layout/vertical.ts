@@ -7,6 +7,8 @@ export const VERTICAL_CANVAS = { width: 1080, height: 1920 } as const;
 type VerticalPaddingScene = {
   verticalExtraTopPx: number;
   verticalExtraSidePx: number;
+  /** When true (Live only), content extends to the canvas bottom. */
+  ignoreGlobalBottomSafeArea?: boolean;
 };
 
 export type VerticalLayout = {
@@ -38,7 +40,9 @@ export function resolveVerticalLayout(
 ): VerticalLayout {
   const topPx = global.verticalTopSafeAreaPx + scene.verticalExtraTopPx;
   const sidePx = global.verticalSidePaddingPx + scene.verticalExtraSidePx;
-  const bottomPx = global.verticalSafeAreaPx;
+  const bottomPx = scene.ignoreGlobalBottomSafeArea
+    ? 0
+    : global.verticalSafeAreaPx;
   const heightPx = Math.max(0, VERTICAL_CANVAS.height - topPx - bottomPx);
 
   const contentWidth = (innerInsetPx = 0) =>

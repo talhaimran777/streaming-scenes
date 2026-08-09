@@ -127,6 +127,10 @@ export const liveSchema = z.object({
   gameCaptureLabel: z.string().default("GAME CAPTURE"),
   gameCaptureWidthVertical: z.number().default(1008),
   gameCaptureHeightVertical: z.number().default(702),
+  ignoreGlobalBottomSafeArea: z.boolean().default(false),
+  verticalStackOrder: z
+    .enum(["gameplay-first", "facecam-first"])
+    .default("gameplay-first"),
   ...verticalPaddingFields,
 });
 

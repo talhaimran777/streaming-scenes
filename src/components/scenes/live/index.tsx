@@ -508,37 +508,86 @@ export function LiveVertical({
             gap: 32,
           }}
         >
-          {settings.showGameCapture && (
-            <div
-              style={{
-                position: "relative",
-                width: game.width,
-                height: game.height,
-                flexShrink: 0,
-              }}
-            >
-              <CornerFrame
-                label={settings.gameCaptureLabel}
-                showLabel={settings.showGameCaptureGuide}
-                fill={
-                  settings.showGameCaptureGuide &&
-                  !settings.transparentBackground
-                }
-                size={52}
-                thick={6}
-              />
-              {settings.showTitle && (
+          {(() => {
+            const gameCaptureBlock = settings.showGameCapture ? (
+              <div
+                key="game"
+                style={{
+                  position: "relative",
+                  width: game.width,
+                  height: game.height,
+                  flexShrink: 0,
+                }}
+              >
+                <CornerFrame
+                  label={settings.gameCaptureLabel}
+                  showLabel={settings.showGameCaptureGuide}
+                  fill={
+                    settings.showGameCaptureGuide &&
+                    !settings.transparentBackground
+                  }
+                  size={52}
+                  thick={6}
+                />
+                {settings.showTitle && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      top: 0,
+                      height: 48,
+                      padding: "0 22px",
+                      background: "rgba(7,7,10,.92)",
+                      borderRight: "3px solid #E8192C",
+                      display: "flex",
+                      alignItems: "center",
+                      zIndex: 2,
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: "var(--font-jetbrains), monospace",
+                        fontSize: 20,
+                        letterSpacing: "0.2em",
+                        color: "#DDDDE2",
+                      }}
+                    >
+                      {title}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : null;
+
+            const facecamBlock = settings.showFacecam ? (
+              <div
+                key="cam"
+                style={{
+                  position: "relative",
+                  width: cam.width,
+                  height: cam.height,
+                  flexShrink: 0,
+                  alignSelf: "flex-start",
+                }}
+              >
+                <CornerFrame
+                  label={settings.facecamLabel}
+                  showLabel={settings.showFacecamLabel}
+                  fill={!settings.transparentBackground}
+                  size={52}
+                  thick={6}
+                />
                 <div
                   style={{
                     position: "absolute",
                     left: 0,
-                    top: 0,
-                    height: 48,
-                    padding: "0 22px",
-                    background: "rgba(7,7,10,.92)",
-                    borderRight: "3px solid #E8192C",
+                    bottom: 0,
                     display: "flex",
                     alignItems: "center",
+                    gap: 14,
+                    height: 52,
+                    padding: "0 22px",
+                    background: "#E8192C",
                     zIndex: 2,
                   }}
                 >
@@ -546,62 +595,21 @@ export function LiveVertical({
                     style={{
                       fontFamily: "var(--font-jetbrains), monospace",
                       fontSize: 20,
-                      letterSpacing: "0.2em",
-                      color: "#DDDDE2",
+                      fontWeight: 700,
+                      letterSpacing: "0.24em",
                     }}
                   >
-                    {title}
+                    {global.brand}
                   </div>
+                  {settings.showAudioBars && <AudioBars />}
                 </div>
-              )}
-            </div>
-          )}
-
-          {settings.showFacecam && (
-            <div
-              style={{
-                position: "relative",
-                width: cam.width,
-                height: cam.height,
-                flexShrink: 0,
-                alignSelf: "flex-start",
-              }}
-            >
-              <CornerFrame
-                label={settings.facecamLabel}
-                showLabel={settings.showFacecamLabel}
-                fill={!settings.transparentBackground}
-                size={52}
-                thick={6}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  bottom: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 14,
-                  height: 52,
-                  padding: "0 22px",
-                  background: "#E8192C",
-                  zIndex: 2,
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--font-jetbrains), monospace",
-                    fontSize: 20,
-                    fontWeight: 700,
-                    letterSpacing: "0.24em",
-                  }}
-                >
-                  {global.brand}
-                </div>
-                {settings.showAudioBars && <AudioBars />}
               </div>
-            </div>
-          )}
+            ) : null;
+
+            return settings.verticalStackOrder === "facecam-first"
+              ? [facecamBlock, gameCaptureBlock]
+              : [gameCaptureBlock, facecamBlock];
+          })()}
 
           {settings.showStatsRail && (
             <div

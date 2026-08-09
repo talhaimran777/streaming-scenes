@@ -399,6 +399,26 @@ function renderFields(
           <Toggle label="Socials (vertical)" checked={!!d.showSocialsVertical} onChange={(v) => u("showSocialsVertical", v)} />
           <Toggle label="Game capture frame (vertical)" checked={!!d.showGameCapture} onChange={(v) => u("showGameCapture", v)} />
           <Toggle label="Game capture guide (label)" checked={!!d.showGameCaptureGuide} onChange={(v) => u("showGameCaptureGuide", v)} />
+          <Toggle
+            label="Ignore global bottom safe area (vertical)"
+            checked={!!d.ignoreGlobalBottomSafeArea}
+            onChange={(v) => u("ignoreGlobalBottomSafeArea", v)}
+          />
+          <Field label="Vertical stack order" hint="Order of game capture and facecam on the vertical Live scene.">
+            <select
+              className="admin-select"
+              value={String(d.verticalStackOrder ?? "gameplay-first")}
+              onChange={(e) =>
+                u(
+                  "verticalStackOrder",
+                  e.target.value as "gameplay-first" | "facecam-first",
+                )
+              }
+            >
+              <option value="gameplay-first">Gameplay first</option>
+              <option value="facecam-first">Facecam first</option>
+            </select>
+          </Field>
         </Section>
         <Section title="Stats rail (default off)">
           <Toggle label="Show stats rail" checked={!!d.showStatsRail} onChange={(v) => u("showStatsRail", v)} />
